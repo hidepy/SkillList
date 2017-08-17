@@ -1,7 +1,7 @@
 (function(){
     'use strict';
 
-	angular.module('SKILL-LIST-APP').controller('HeaderController', function($scope, $routeParams, SkillSetService) {
+	angular.module('SKILL-LIST-APP').controller('HeaderController', function($scope, SkillSetService) {
 
     console.log("before all header logic");
 
@@ -21,12 +21,16 @@
     };
 
     $scope.move2UserDetail = function(user_id){
-      console.log("move!!");
-      $scope.move("/userdetail/" + user_id);
+      //console.log("move!!");
+      //$scope.move("/userdetail/" + user_id);
+
+      //myNavigator.pushPage("view/userdetail.html");
+      myNavigator.pushPage("page.html");
     };
 
     $scope.move2SkillDetail = function(){
       console.log("move!! skill");
+      myNavigator.pushPage("view/userdetail.html");
     };
 
     $scope.getSkillSet = function(){

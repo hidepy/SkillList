@@ -1,49 +1,9 @@
 (function(){
     'use strict';
 
-    // load event
-    // normal javascript
-    document.addEventListener("DOMContentLoaded", function(){
-        window.CommonFunctions = {
-            formatDate: function(date){
-                return ("" + date.getFullYear() + ("00" + (date.getMonth() + 1)).slice(-2) + ("00" + date.getDate()).slice(-2) + ("00" + date.getHours()).slice(-2) + ("00" + date.getMinutes()).slice(-2) + ("00" + date.getSeconds()).slice(-2) );
-            },
-            isEmpty: function(s){
-                return (s == null) || (s == undefined) || (s == "");
-            }
-        };
-        // このあたりで初回ロードか否かを判定するためのlocalStorageをセットしておく
-
-        angular.bootstrap(document, ['SKILL-LIST-APP']);
-
-        angular.element("#initial-view").animate({
-            opacity: 0
-        }, 1000)
-        .queue(function(){
-            this.remove();
-        })
-
-    });
-
     // angular module setup
-   angular.module('SKILL-LIST-APP', ['ngRoute'])
-        // Module 設定
-        .config(function($routeProvider, $locationProvider){
-            $routeProvider
-                .when("/", {
-                    templateUrl: "js/view/main.html",
-                    controller: "HeaderController"
-                })
-                .when("/userdetail/:user_id", {
-                    templateUrl: "js/view/user-detail.html",
-                    controller: "UserDetailController"
-                })
-                .otherwise({
-                    redirectTo: "/"
-                });
-            $locationProvider.hashPrefix('');
-            $locationProvider.html5Mode(true);
-        })
+   //angular.module('SKILL-LIST-APP', [])
+   ons.bootstrap('SKILL-LIST-APP', [])
         // 最親のController
         .controller('RootController', function($scope, $location, $timeout){
 
@@ -93,20 +53,5 @@
                 });
             };
 
-            /*
-            this.getData = function(param){
-              return $http.get("php/router.php/skillset")
-                .then(function(response_wrapper){
-
-                  console.log("in http#get");
-                  console.log(response_wrapper);
-
-                  console.log("before http#get return");
-
-                  return response_wrapper.data || [];
-                }
-              );
-            }
-            */
         });
 })();

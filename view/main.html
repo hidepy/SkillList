@@ -1,0 +1,35 @@
+<ons-page ng-controller="HeaderController">
+  <div id="h-wrapper" ng-init="init()">
+
+    <div id="h-serach-conditions-wrapper">
+
+      <input ng-model="search_conditions.user_id" />
+      <input ng-model="search_conditions.skill_id" />
+      <input ng-model="search_conditions.skill_level" />
+
+      <ons-button modifier="large--cta" ng-click="getSkillSet()">Search</ons-button>
+    </div>
+
+    <div id="h-user-skill-wrapper">
+      <div ng-repeat="item in items">
+        <p class="list-head">
+          <a href="javascript:void(0)" ng-click="move2UserDetail(item.user_id)">
+            {{item.user_id}}:{{item.user_name}}
+          </a>
+        </p>
+        <div class="list-detail">
+          <span>
+            <a href="javascript:void(0)" ng-click="move2SkillDetail()">
+              {{item.skill_id}}:{{item.skill_name}}
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert" ng-show="message_info.show" ng-class="message_info.status" role="alert" data-dismiss="alert" style="position: absolute; top: 0; left: 0; width: 100%">
+      {{message_info.message}}
+    </div>
+
+  </div>
+</ons-page>
