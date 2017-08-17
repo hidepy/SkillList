@@ -1,7 +1,7 @@
 <?php
 // FROM Git wbrxcorp(shimarin) thanx!!
 
-require_once("skills.php");
+require_once("UserSkillManager.php");
 
 // PHP 5.3以上必須(無名関数を使用)
 ///////////////////////////////////////////////////////////////////////////
@@ -100,6 +100,7 @@ if (preg_match_all("/^\/skillset$/", $path, $params)) {
     if ($method == "GET") {
       // ユーザ情報取得
       $usm = new UserSkillManager();
+      //$usm->getUserSkillWithCondition($_GET);
       response_json($usm->getUserSkillWithCondition($_GET));
       exit;
     } else if ($method == "POST") {
@@ -110,24 +111,16 @@ if (preg_match_all("/^\/skillset$/", $path, $params)) {
         throw new HttpErrorStatus("Method Not Allowed", 405);
     }
 }
-else if(preg_match_all("/^\/skillset\/?\?(.*)$/", $path, $params)){
-echo "comes2";
-
-  /*
+if(preg_match_all("/^\/master$/", $path, $params)){
   if ($method == "GET") {
-    $path_variable = (int)$params[1][0];
-    $get_params = $_GET["user_id"];
-
-    echo $path_variable." get ok?";
-
     // ユーザ情報取得
     $usm = new UserSkillManager();
-    //response_json($usm->getUserSkillByUserId($path_variable));
+    response_json($usm->getUserSkillByUserId($path_variable));
     exit;
   } else {
       throw new HttpErrorStatus("Method Not Allowed", 405);
   }
-  */
+
 }
 /*
 if (preg_match_all("/^\/hello\/([0-9]+)$/", $path, $params) && $method == "POST") {
