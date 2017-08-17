@@ -1,0 +1,269 @@
+<style>
+.img-fluid{
+  margin: 0 auto;
+  padding: 0 3px;
+}
+.img-fluid {
+    -moz-transform: scale(0.85);
+    -ms-transform: scale(0.85);
+    -o-transform: scale(0.85);
+    -webkit-transform: scale(0.85);
+    opacity: 0.7;
+    transform: scale(0.85);
+    transition: all 300ms ease;
+  }
+.slick-center img{
+  transform: scale(1);
+    opacity: 1;
+}
+
+.comment-text{
+  white-space: pre-line;
+}
+
+.item_rate_list{
+  display: flex;
+}
+.item_rate_list > .box{
+  
+}
+#related_posts_wrapper > div{
+  margin: 8px 0;
+}
+#item_tag_list_wrapper > ul > li{
+  display: inline-block;
+  list-style-type: none;
+  margin: 2px 4px;
+  padding: 4px;
+  border-radius: 5px;
+  background-color: aliceblue;
+}
+/*
+.sub-section {
+  margin: .5em .25em .25em 0;
+  padding: .25em 0 .25em .5em;
+  border-left: 8px solid #93dfb8;
+  font-size: 18px;
+  font-weight: bold;
+}
+*/
+.sub-section {
+  position: relative;
+  margin: .5em .25em .25em 0;
+  padding: .25em 0 .5em .75em;
+  border-left: 6px solid #93dfb8;
+  font-size: 18px;
+  font-weight: bold;
+}
+.sub-section::after {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  content: '';
+  width: 100%;
+  height: 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.sub-sub-section {
+  margin: .25em 0 .25em 0;
+  padding: .25em 0 .25em .75em;
+  border-left: 4px solid #ccc;
+  font-size: 16px;
+}
+
+.tag_info_disp{
+
+}
+.item_rating_title{
+  display: inline-block;
+  background: linear-gradient(transparent 70%, #93dfb8 70%);
+}
+
+#item_address_wrapper{
+  margin-top: .75em;
+  margin-bottom: .25em;
+}
+.comment-text, #item_address_wrapper > .item_detail{
+  margin: .5em;
+}
+
+.item_rate_list > div{
+  width: 45%;
+}
+@media screen and (min-width:768px) { 
+    /*　画面サイズが480pxからはここを読み込む　*/
+  .item_rate_list > div{
+    width: 25%;
+  }
+}
+
+</style>
+
+<div id="map_detailarea_wrapper" ng-init="init()">
+  <div id="detail" class="col-md-12 col-12">
+
+    <div class="card">
+      <div class="card_heading">
+        <h2>{{selected_item.name}}</h2>
+      </div>
+
+      <div id="carousel-wrapper">
+        <slick id="thumbnail-carousel" ng-if="thumbLoaded" settings="slickConfig">
+          <div class="item" ng-repeat="(detail_idx, detail_item) in selected_item.detail_info" ng-click="selectThumbnailImg($index)">
+            
+            <a href="{{detail_item.image_url}}" data-lightbox="main_images" data-title="{{detail_item.comment}}">
+              <img class="d-block img-fluid" ng-src="{{detail_item.image_url_thumb}}" />
+              <p class="item_detail" style="font-size: 70%;">
+                <span ng-show="detail_item.visit_date!='0000-00-00'">@{{detail_item.visit_date}}</span> by {{detail_item.author}}
+              </p>
+            </a>
+          </div>
+        </slick>
+      </div>
+
+      <div>
+        <p class="sub-sub-section">コメント</p>
+        <div class="comment-text">
+          {{selected_item.caption|conv2br}}
+        </div>
+
+        <regist-comment current-comment="selected_item.caption" current-id="selected_item.id" memo-master-name="MHM-Detail-Comment"></regist-comment>
+
+        <div id="item_rate_list_wrapper row">
+          <div class="item_rate_list">
+            <div>
+              <p class="item_rating_title">オススメ度</p>
+              <p>{{selected_item.favorite}}</p>
+            </div>
+            <div>
+              <span class="item_rating_title">場所タイプ</span>
+              <p>{{selected_item.place_type_name}}</p>
+              <p>
+                <span class="tag_info_disp" ng-repeat="tag in selected_item.tag_info">
+                  {{tag.tag_name}}
+                </span>
+              </p>
+            </div>
+            <div>
+              <span class="item_rating_title">アクセスし易さ</span>
+              <p>{{selected_item.accessibility}}</p>
+            </div>
+            <div>
+              <span class="item_rating_title">混雑度</span>
+              <p>{{selected_item.crowdness}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="item_address_wrapper">
+          <div class="sub-sub-section">住所</div>
+          <div class="item_detail">
+            <span class="item_zip">{{selected_item.zip_no}}</span>
+            <p>{{selected_item.address}}</p>
+            <a ng-show="!!selected_item.lat && !!selected_item.lng" target="_blank" href="http://maps.apple.com/?q={{selected_item.gmap_search_param}}">GoogleMapで開く</a>
+          </div>
+        </div>
+      </div>
+      
+
+      <adsense></adsense>
+
+      <!-- 関連コンテンツの表示 -->
+      <div id="related_posts_wrapper" ng-hide="has_no_data">
+
+        <p class="sub-section">他の場所を探す</p>
+
+        <!--
+        <div>
+          <p class="sub-sub-section">こんな場所が人気です</p>
+          <div class="card_wrapper col-md-4 col-4" ng-repeat="(card_idx, item) in selected_item.related_info" >
+              <div class="panel" ng-click="selectCard(card_idx)">
+                <div class="panel-heading">
+                  <div class="panel_img" ng-style="{'background-image': 'url('+ item.image_url +')'}"></div>
+                  <div class="ravel">
+                    <span class="card-score badge" ng-class="{'badge-danger': item.favorite >= 8, 'badge-warning': (item.favorite < 8 && item.favorite >= 6), 'badge-default': item.favorite < 6}">{{item.favorite}}</span>
+                    <span class="prefecture">{{item.prefecture}}</span>
+                  </div>
+                </div>
+                <div class="panel-body">
+                  {{item.name}}
+                </div>
+              </div>
+          </div>
+        </div>
+        -->
+
+        <div id="related_posts_tags">
+          <p class="sub-sub-section">タグで探す</p>
+          <span ng-repeat="tag in selected_item.tag_info">
+            <button class="btn btn-link btn-search-related" ng-click="searchRelated('TAG', tag.tag_id)">
+              {{tag.tag_name}}
+            </button>
+          </span>
+
+          <div class="row no-gutters">
+            <div class="card_wrapper col-md-4 col-4" ng-repeat="(card_idx, item) in selected_item.related_info.tags" >
+              <div class="panel" ng-click="selectCardByName(item.name)">
+                <div class="panel-heading">
+                  <div class="panel_img" ng-style="{'background-image': 'url('+ item.image_url +')'}"></div>
+                  <div class="ravel">
+                    <span class="card-score badge" ng-class="{'badge-danger': item.favorite >= 8, 'badge-warning': (item.favorite < 8 && item.favorite >= 6), 'badge-default': item.favorite < 6}">{{item.favorite}}</span>
+                    <span class="tag">{{item.tag}}</span>
+                  </div>
+                </div>
+                <div class="panel-body">
+                  {{item.name}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div id="related_posts_pref">
+          <p class="sub-sub-section">同じ県の他の場所を探す</p>
+          <button class="btn btn-success btn-search-related" ng-click="searchRelated('PREF')">
+            「{{selected_item.prefecture}}」の他の絶景を検索
+          </button>
+
+          <div class="row no-gutters">
+            <div class="card_wrapper col-md-4 col-4" ng-repeat="(card_idx, item) in selected_item.related_info.pref" >
+              <div class="panel" ng-click="selectCardByName(item.name)">
+                <div class="panel-heading">
+                  <div class="panel_img" ng-style="{'background-image': 'url('+ item.image_url +')'}"></div>
+                  <div class="ravel">
+                    <span class="card-score badge" ng-class="{'badge-danger': item.favorite >= 8, 'badge-warning': (item.favorite < 8 && item.favorite >= 6), 'badge-default': item.favorite < 6}">{{item.favorite}}</span>
+                  </div>
+                </div>
+                <div class="panel-body">
+                  {{item.name}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div id="related_posts_type">
+          <p class="sub-sub-section">関連するタイプの他の場所を探す</p>
+          <button class="btn btn-success btn-search-related" ng-click="searchRelated('TYPE')">
+            「{{selected_item.place_type_name}}」の他の絶景を検索
+          </button>
+        </div>
+      </div>
+
+    </div> <!-- /.card -->
+
+    <div>
+      <a class="navbar-brand" href="#" ng-click="moveBack($event)">
+        <h1 ng-hide="binding.is_detail_page">{{binding.title}}</h1>
+        <span ng-show="binding.is_detail_page">Back</span>
+      </a>
+
+    </div>
+
+  </div><!-- /#detail -->
+
+</div><!-- /.row -->
+

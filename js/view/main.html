@@ -1,0 +1,95 @@
+
+<div id="header-page-wrapper" ng-init="init()">
+
+  <!-- 検索条件wrapper -->
+  <div id="search-cond-disp-area" ng-show="!!search_condition_text" ng-class="search_condition_class" ng-click="toggleSearchCondDisp()">
+    検索条件：{{search_condition_text}}
+  </div>
+
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item nav-tab-M">
+      <a class="nav-link" ng-click="selectTab('M')" data-toggle="tab" role="tab">地図で見る</a>
+    </li>
+    <li class="nav-item nav-tab-C">
+      <a class="nav-link" ng-click="selectTab('C')" data-toggle="tab" role="tab">写真で見る</a>
+    </li>
+    <li class="nav-item nav-tab-L" ng-show="binding.is_admin">
+      <a class="nav-link" ng-click="selectTab('L')" data-toggle="tab" role="tab">リスト</a>
+    </li>
+  </ul>
+
+  <div class="tab-content" style="position: relative;">
+  
+    <!-- Map tab -->
+    <div class="tab-pane" ng-class="" role="tabpanel" id="tab-map">
+      <div class="col-md-12 col-12">
+        <div id="history_map"></div>
+      </div>
+    </div>
+
+    <!-- Card Tab -->
+    <div class="tab-pane" role="tabpanel" id="tab-card">
+      <div id="cards_wrapper" class="row no-gutters">
+        <div class="card_wrapper col-md-3 col-4" ng-repeat="(card_idx, item) in items" >
+            <div class="panel" ng-click="selectCard(card_idx)">
+              <div class="panel-heading">
+                <div class="panel_img" ng-style="{'background-image': 'url('+ item.image_url +')'}"></div>
+                <div class="ravel">
+                  <span class="card-score badge" ng-class="{'badge-danger': item.favorite >= 8, 'badge-warning': (item.favorite < 8 && item.favorite >= 6), 'badge-default': item.favorite < 6}">{{item.favorite}}</span>
+                  <span class="prefecture">{{item.prefecture}}</span>
+                </div>
+              </div>
+              <div class="panel-body">
+                {{item.name}}
+              </div>
+            </div>
+        </div>
+      </div><!-- /#cards_wrapper -->
+    </div>
+
+    <!-- List Tab -->
+    <div class="tab-pane" role="tabpanel" id="tab-list">
+      <ul class="place-list">
+        <li class="row" style="position: relative;" ng-repeat="item in items" ng-click="selectCard($index)">
+          <div class="col-1">
+            <div class="list-thumb" ng-style="{'background-image': 'url({{item.image_url}})'}"></div>
+          </div>
+          <div class="col-11">
+            <div class="row">
+              <div class="col-md-3 col-3">{{item.name}}</div>
+              <div class="col-md-9 col-9">〒{{item.zip_no}} {{item.address}}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-3 col-3">
+                <p>お気に入り</p>
+                <p>{{item.favorite}}</p>
+              </div>
+              <div class="col-md-3 col-3">
+                <p>アクセシビリティ</p>
+                <p>{{item.accessibility}}</p>
+              </div>
+              <div class="col-md-3 col-3">
+                <p>混雑度</p>
+                <p>{{item.crowdness}}</p>
+              </div>
+              <div class="col-md-3 col-3">
+                <p>タイプ</p>
+                <p>{{item.place_type}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 col-12">{{item.caption}}</div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+
+<div class="alert" ng-show="message_info.show" ng-class="message_info.status" role="alert" data-dismiss="alert" style="position: absolute; top: 0; left: 0; width: 100%">
+  {{message_info.message}}
+</div>
+
+
+  </div>
+</div>
