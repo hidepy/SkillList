@@ -1,31 +1,108 @@
 <ons-page ng-controller="HeaderController">
+
   <div id="h-wrapper" ng-init="init()">
 
     <div id="h-serach-conditions-wrapper">
 
-      <input ng-model="search_conditions.user_id" />
-      <input ng-model="search_conditions.skill_id" />
-      <input ng-model="search_conditions.skill_level" />
+      <h3>Search Condition</h3>
 
-      <ons-button modifier="large--cta" ng-click="getSkillSet()">Search</ons-button>
+      <ons-row>
+        <ons-col>
+          <ons-row>
+            <ons-col>
+              <label for="h-search-condition-user_id">社員ID</label>
+              <input id="h-search-condition-user_id" ng-model="search_conditions.user_id" />
+            </ons-col>
+          </ons-row>
+        </ons-col>
+        <ons-col>
+          <label for="h-search-condition-skill_id">スキル</label>
+          <!--
+            <ons-list id="h-search-condition-skill_id_multi" ng-repeat="item in select_lists.skill_multi">
+              <ons-list-item modifier="tappable" id="{{item.id}}">
+                <label class="radio-button radio-button--list-item">
+                  <input type="radio" />
+                  <div class="radio-button__checkmark radio-button--list-item__checkmark"></div>
+                  {{item.name}}
+                </label>
+              </ons-list-item>
+          </ons-list>
+        -->
+          <input id="h-search-condition-skill_id" ng-model="search_conditions.skill_id" />
+        </ons-col>
+        <ons-col>
+          <label for="h-search-condition-skill_level">スキルレベル</label>
+          <input id="h-search-condition-skill_level" ng-model="search_conditions.skill_level" />
+        </ons-col>
+        <ons-col>
+          <ons-button modifier="large--cta" ng-click="getSkillSet()">Search</ons-button>
+        </ons-col>
+      </ons-row>
+
+      <div>
+
+        <h3>Display Type</h3>
+
+        <ons-row>
+          <ons-col class="button-bar__item">
+            <input type="radio" name="h-disp-condition" value="0" ng-model="disp_condition" ng-change="changeDispType()" />
+            <div class="button-bar__button">とりあえず列挙</div>
+          </ons-col>
+            <ons-col class="button-bar__item">
+              <input type="radio" name="h-disp-condition" value="1" ng-model="disp_condition" ng-change="changeDispType()" />
+              <div class="button-bar__button">社員ベースで保有するスキルを表示</div>
+            </ons-col>
+            <ons-col class="button-bar__item">
+              <input type="radio" name="h-disp-condition" value="2" ng-model="disp_condition" ng-change="changeDispType()" />
+              <div class="button-bar__button">スキルベースで扱える社員を表示</div>
+            </ons-col>
+        </ons-row>
+      </div>
+
     </div>
 
     <div id="h-user-skill-wrapper">
-      <div ng-repeat="item in items">
-        <p class="list-head">
-          <a href="javascript:void(0)" ng-click="move2UserDetail(item.user_id)">
+
+      <h3>Result</h3>
+
+      <ons-row ng-repeat="(key, item) in items_key track by $index" ng-hide="disp_condition==0">
+        <ons-col>
+          <a href="javascript:void(0)" ng-click="move2Detail(disp_condition==1 ? 'U' : 'S', key)">
+            {{key}}:{{mainkey_conv_hash[key]["name"]}}
+          </a>
+        </ons-col>
+        <ons-col>
+          <ul>
+            <li ng-repeat="id in item track by $index">
+              <a href="javascript:void(0)" ng-click="move2Detail(disp_condition==2 ? 'U' : 'S', items_hash[id][subkey_prop_id])">
+                {{items_hash[id][subkey_prop_id]}}:{{items_hash[id][subkey_prop_name]}}
+              </a>
+            </li>
+          </ul>
+        </ons-col>
+      </ons-row>
+
+
+      <ons-row ng-repeat="item in items" ng-show="disp_condition==0">
+        <ons-col class="list-head">
+          <a href="javascript:void(0)" ng-click="move2Detail('U', item.user_id)">
             {{item.user_id}}:{{item.user_name}}
           </a>
-        </p>
-        <div class="list-detail">
-          <span>
-            <a href="javascript:void(0)" ng-click="move2SkillDetail()">
-              {{item.skill_id}}:{{item.skill_name}}
-            </a>
-          </span>
-        </div>
-      </div>
+        </ons-col>
+        <ons-col class="list-detail">
+          <ons-col>
+            <div class="">
+              <a href="javascript:void(0)" ng-click="move2Detail('S', item.skill_id)">
+                {{item.skill_name}}
+              </a>
+            </div>
+          </ons-col>
+        </ons-col>
+      </ons-row>
+
+
     </div>
+
 
     <div class="alert" ng-show="message_info.show" ng-class="message_info.status" role="alert" data-dismiss="alert" style="position: absolute; top: 0; left: 0; width: 100%">
       {{message_info.message}}

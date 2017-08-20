@@ -1,17 +1,40 @@
 (function(){
-    'use strict';
+  'use strict';
 
 	angular.module('SKILL-LIST-APP').controller('HeaderController', function($scope, SkillSetService) {
-
-    console.log("before all header logic");
 
     // 一覧表示用
     $scope.items = [];
 
-    $scope.init = function(){
-      console.log("init event driven");
+    // 一覧表示用itemsから、key-subkey(の配列)を作って納めておくためのhash
+    $scope.items_key = {};
+    // 一覧表示用itemsから、subkeyで値を引ける用にするためのhash
+    $scope.items_hash = {};
+    // subkeyのid, nameプロパティ名
+    $scope.subkey_prop_id = "";
+    $scope.subkey_prop_name = "";
+    // key翻訳用に使用するハッシュ
+    $scope.mainkey_conv_hash = {};
 
-      console.log($scope.items);
+    // 検索条件選択リスト
+    $scope.select_lists = {
+      skill_multi: [],
+      skill_single: [],
+      depart: [],
+      nendo: []
+    };
+
+    $scope.init = function(){
+        // この画面で使用するオブジェクトにメイン側からコピー
+        $scope.select_lists.skill_multi = angular.copy($scope.com_skill_list);
+        $scope.select_lists.skill_single = angular.copy($scope.com_skill_list);
+        $scope.select_lists.depart = angular.copy($scope.com_depart_list);
+        $scope.select_lists.nendo = (function(){
+          var res = [];
+          for(var i = 1967; i <= (new Date()).getFullYear(); i++)
+            res.push(i);
+          return res;
+        })();
     };
 
     $scope.search_conditions = {
@@ -20,47 +43,55 @@
       skill_level: ""
     };
 
-    $scope.move2UserDetail = function(user_id){
-      //console.log("move!!");
-      //$scope.move("/userdetail/" + user_id);
-
-      //myNavigator.pushPage("view/userdetail.html");
-      myNavigator.pushPage("page.html");
-    };
-
-    $scope.move2SkillDetail = function(){
-      console.log("move!! skill");
-      myNavigator.pushPage("view/userdetail.html");
-    };
+    // 表示タイプ(0: 列挙, 1: ユーザベースで, 2: スキルベースで)
+    $scope.disp_condition = "0";
 
     $scope.getSkillSet = function(){
-
-      console.log("getSkillSet");
-
       SkillSetService.getSkillSetWithCondition($scope.search_conditions)
         .then(function(res){
-          //$scope.items = angular.copy(res.item || []);
+          /*
           $scope.items = (res.item || []).map(function(v){
             return v;
           });
+          */
+          $scope.items = res.item;
+
+          // items以外のタブを更新する
+          $scope.changeDispType();
         });
     };
 
-    // 廃止予定
-    $scope.getAll = function(){
-      console.log("getAll");
+    $scope.changeDispType = function(){
 
-      console.log("----------getAll start----------");
-      SkillSetService.getData()
-        .then(function(res){
-          console.log("----------getAll#SkillSetService then start----------");
-          console.log(res);
+      $scope.items_key = {};
+      $scope.items_hash = {};
+      $scope.mainkey_conv_hash = {};
 
-          $scope.items = res.item || [];
+      if($scope.disp_condition == "1"){
+        ($scope.items || []).forEach(function(v){
+          var h = $scope.items_key[v.user_id] || [];
+          h.push(v.skill_id);
+          $scope.items_key[v.user_id] = h;
+        });
 
-          console.log("----------getAll#SkillSetService then   end----------");
-        })
-      console.log("----------getAll   end----------");
+        $scope.items_hash = convArr2Hash($scope.items, "skill_id");
+        $scope.subkey_prop_id = "skill_id";
+        $scope.subkey_prop_name = "skill_name";
+      }
+      else if($scope.disp_condition == "2"){
+        ($scope.items || []).forEach(function(v){
+          var h = $scope.items_key[v.skill_id] || [];
+          h.push(v.user_id);
+          $scope.items_key[v.skill_id] = h;
+        });
+
+        $scope.items_hash = convArr2Hash($scope.items, "user_id");
+        $scope.subkey_prop_id = "user_id";
+        $scope.subkey_prop_name = "user_name";
+
+        $scope.mainkey_conv_hash = $scope.com_skill_hash;
+      }
     };
+
   });
 })();

@@ -2,6 +2,7 @@
 // FROM Git wbrxcorp(shimarin) thanx!!
 
 require_once("UserSkillManager.php");
+require_once("MasterManager.php");
 
 // PHP 5.3以上必須(無名関数を使用)
 ///////////////////////////////////////////////////////////////////////////
@@ -94,13 +95,11 @@ $params = Array();  // preg_match_allの結果を受け取るArray
 
 // ルーティング本処理
 
-
 if (preg_match_all("/^\/skillset$/", $path, $params)) {
 
     if ($method == "GET") {
       // ユーザ情報取得
       $usm = new UserSkillManager();
-      //$usm->getUserSkillWithCondition($_GET);
       response_json($usm->getUserSkillWithCondition($_GET));
       exit;
     } else if ($method == "POST") {
@@ -111,17 +110,46 @@ if (preg_match_all("/^\/skillset$/", $path, $params)) {
         throw new HttpErrorStatus("Method Not Allowed", 405);
     }
 }
-if(preg_match_all("/^\/master$/", $path, $params)){
+else if(preg_match_all("/^\/master$/", $path, $params)){
   if ($method == "GET") {
-    // ユーザ情報取得
-    $usm = new UserSkillManager();
-    response_json($usm->getUserSkillByUserId($path_variable));
+
+    $mm = new MasterManager();
+    response_json($mm->getAllMaster());
+    exit;
+
+  } else {
+      throw new HttpErrorStatus("Method Not Allowed", 405);
+  }
+}
+else if(preg_match_all("/^\/master\/skill$/", $path, $params)){
+  if ($method == "GET") {
+    $mm = new MasterManager();
+    response_json($mm->getSkillMaster($_GET));
     exit;
   } else {
       throw new HttpErrorStatus("Method Not Allowed", 405);
   }
-
 }
+else if(preg_match_all("/^\/master\/user$/", $path, $params)){
+  if ($method == "GET") {
+    $mm = new MasterManager();
+    response_json($mm->getUserMaster($_GET));
+    exit;
+  } else {
+      throw new HttpErrorStatus("Method Not Allowed", 405);
+  }
+}
+else if(preg_match_all("/^\/master\/depart$/", $path, $params)){
+  if ($method == "GET") {
+    $mm = new MasterManager();
+    response_json($mm->getDepartMaster($_GET));
+    exit;
+  } else {
+      throw new HttpErrorStatus("Method Not Allowed", 405);
+  }
+}
+
+
 /*
 if (preg_match_all("/^\/hello\/([0-9]+)$/", $path, $params) && $method == "POST") {
     $path_variable1 = (int)$params[1][0];

@@ -30,6 +30,49 @@ class DBManager{
     return $dbh;
   }
 
+
+  function getRecordsBySqlAndKVObj($query, $params, $kvobj, $dbh){
+    // 共通返却Obj
+    $if_return = array("return_cd"=> 9, "msg"=> "ERROR OCCURRED...", "item"=> null);
+
+    $need_destroy_dbh = false;
+
+    // DB接続用Object取得
+    if($dbh == null){
+      $dbh = $this->_open_db();
+      $need_destroy_dbh = true;
+    }
+
+    // Queryコンパイル
+    $stmt = $dbh->prepare($query);
+    // Query実行
+    $stmt->execute($params);
+    // 返却用
+    $res = [];
+
+    while($r = $stmt->fetch()){
+      $tmp_obj = array();
+      // key-val objectのプロパティ定義に従って値をコピー
+      foreach ($kvobj as $key => $value) {
+        $tmp_obj[$key] = $r[$value];
+      }
+      $res[] = $tmp_obj;
+    }
+
+    // 返却用Objにセット
+    $if_return["return_cd"] = 0;
+    $if_return["msg"] = "";
+    $if_return["item"] = $res;
+
+    // 解放
+    if($need_destroy_dbh){
+      $dbh = null;
+    }
+
+    return $if_return;
+
+  }
+
   // IN句のバインド
   protected function getInString($params){
     return substr(str_repeat(',?', count($params)), 1);

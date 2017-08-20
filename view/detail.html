@@ -1,0 +1,58 @@
+<ons-page ng-controller="DetailController">
+  <div id="d-wrapper" ng-init="init()">
+
+    <div id="ud-wrapper" ng-show="type=='U'">
+
+      <h2>{{user_info.user_name}}</h2>
+
+      <div id="ud-contents">
+        <ons-row>
+          <ons-col>社員ID</ons-col>
+          <ons-col>{{user_info.user_id}}</ons-col>
+        </ons-row>
+
+        <ons-row>
+          <ons-col>所属部署</ons-col>
+          <ons-col>{{user_info.depart_name}}({{user_info.depart_id}})</ons-col>
+        </ons-row>
+
+        <ons-row>
+          <ons-col>入社年</ons-col>
+          <ons-col>
+            {{user_info.nendo}} {{user_info.is_midcarrer ? "[中途]" : ""}}
+            <ons-button>同期を探す</ons-button>
+          </ons-col>
+        </ons-row>
+
+      </div>
+
+    </div>
+
+    <div id="us-wrapper" ng-show="type=='S'">
+      <h2>{{skill_info.skill_name}}</h2>
+
+      <div id="us-contents">
+        <ons-row>
+          <ons-col>(スキルID)</ons-col>
+          <ons-col>{{skill_info.skill_id}}</ons-col>
+        </ons-row>
+
+        <ons-row>
+          <ons-col>スキル種別</ons-col>
+          <ons-col>{{skill_info.type_name}}({{skill_info.type}})</ons-col>
+        </ons-row>
+
+        <ons-row ng-show="skill_info.type=='F'">
+          <ons-col>基盤言語</ons-col>
+          <ons-col>
+            <a href="javascript:void(0)" ng-click="move2Detail('S', skill_info.rel_id)">
+              {{skill_info.rel_name}}({{skill_info.rel_id}})
+            </a>
+          </ons-col>
+        </ons-row>
+      </div>
+    </div>
+
+    <ons-button ng-click="myNavigator.popPage();">戻る</ons-button>
+  </div>
+</ons-page>
