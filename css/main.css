@@ -1,7 +1,27 @@
+body{
+  font-family: Avenir, "Open Sans", "Helvetica Neue", Helvetica, Arial, Verdana, Roboto, "Yu Gothic", "YuGothic", Meiryo, "Hiragino Kaku Gothic Pro", "MS PGothic", sans-serif !important;
+  padding: 8px;
+}
+
 #h-head-toolbar h2{
   margin: auto auto auto 4px;
   font-size: 28px;
 }
 ons-page{
   margin: 36px 2px 0 2px;
+}
+.fontsize-small{
+  font-size: 60%;
+}
+
+.heading {
+  padding: 0.25em 0.5em !important;/*上下 左右の余白*/
+  color: #494949;/*文字色*/
+  background: transparent;/*背景透明に*/
+  border-left: solid 5px #7db4e6;/*左線*/
+}
+
+.list > .list-item > div > span{
+  width: 50%;
+
 }

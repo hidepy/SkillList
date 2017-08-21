@@ -3,16 +3,25 @@
 
 	angular.module('SKILL-LIST-APP').controller('HeaderController', function($scope, SkillSetService) {
 
+    // 画面表示コントロール用 デフォルトは空白.
+    $scope.type = "";
+
     // 一覧表示用
     $scope.items = [];
 
     // 一覧表示用itemsから、key-subkey(の配列)を作って納めておくためのhash
+    //   これがベース. DispType一番左(0)の純粋列挙の場合に使用される. のと、ベースの受け皿
     $scope.items_key = {};
+
     // 一覧表示用itemsから、subkeyで値を引ける用にするためのhash
+    //   これがDispType1, 2の場合の表示に使用されるhash. user_id又はskill_idがハッシュのキーとなり、valueはitemsの1要素のオブジェクトが入る
     $scope.items_hash = {};
+
     // subkeyのid, nameプロパティ名
+    //   subkey = DispTypeが1 or 2の場合に、ユーザベース表示ならsubkey=skill_id、スキルベース表示ならsubkey=user_id
     $scope.subkey_prop_id = "";
     $scope.subkey_prop_name = "";
+
     // key翻訳用に使用するハッシュ
     $scope.mainkey_conv_hash = {};
 
@@ -24,17 +33,21 @@
       nendo: []
     };
 
-    $scope.init = function(){
-        // この画面で使用するオブジェクトにメイン側からコピー
-        $scope.select_lists.skill_multi = angular.copy($scope.com_skill_list);
-        $scope.select_lists.skill_single = angular.copy($scope.com_skill_list);
-        $scope.select_lists.depart = angular.copy($scope.com_depart_list);
-        $scope.select_lists.nendo = (function(){
-          var res = [];
-          for(var i = 1967; i <= (new Date()).getFullYear(); i++)
-            res.push(i);
-          return res;
-        })();
+    $scope.h_init = function(){
+
+      console.log("HeaderController Init");
+
+      // この画面で使用するオブジェクトにメイン側からコピー
+      $scope.select_lists.skill_multi = angular.copy($scope.com_skill_list);
+      $scope.select_lists.skill_single = angular.copy($scope.com_skill_list);
+      $scope.select_lists.depart = angular.copy($scope.com_depart_list);
+      $scope.select_lists.nendo = (function(){
+        var res = [];
+        for(var i = 1967; i <= (new Date()).getFullYear(); i++)
+          res.push(i);
+        return res;
+      })();
+
     };
 
     $scope.search_conditions = {
@@ -47,26 +60,27 @@
     $scope.disp_condition = "0";
 
     $scope.getSkillSet = function(){
+
+
+
       SkillSetService.getSkillSetWithCondition($scope.search_conditions)
         .then(function(res){
-          /*
-          $scope.items = (res.item || []).map(function(v){
-            return v;
-          });
-          */
+          // 単純に結果をコピー
           $scope.items = res.item;
 
-          // items以外のタブを更新する
+          // items以外の表示方法データを更新する
           $scope.changeDispType();
         });
-    };
+    };n
 
+    // レコード表示方法(DispType)のボタン変更時イベント
     $scope.changeDispType = function(){
 
       $scope.items_key = {};
       $scope.items_hash = {};
       $scope.mainkey_conv_hash = {};
 
+      // 社員ベースでスキルを表示するタイプの場合
       if($scope.disp_condition == "1"){
         ($scope.items || []).forEach(function(v){
           var h = $scope.items_key[v.user_id] || [];
@@ -74,10 +88,14 @@
           $scope.items_key[v.user_id] = h;
         });
 
+        // 内部的にitems_hash作るのとmainkey_conv_hash作るので2回回しているのが気になるんだけど、目をつぶります。
         $scope.items_hash = convArr2Hash($scope.items, "skill_id");
         $scope.subkey_prop_id = "skill_id";
         $scope.subkey_prop_name = "skill_name";
+
+        $scope.mainkey_conv_hash = $scope.com_user_hash;
       }
+      // スキルベースで社員を表示するタイプの場合
       else if($scope.disp_condition == "2"){
         ($scope.items || []).forEach(function(v){
           var h = $scope.items_key[v.skill_id] || [];
@@ -93,5 +111,24 @@
       }
     };
 
+    // 初期処理
+    var options = myNavigator.topPage.data || {};
+    $scope.type = options.type || "";
+
+    // スキル検索の場合
+    if($scope.type == "S"){
+      // スキルベースで結果を表示
+      $scope.disp_condition = "2";
+    }
+
+    // デフォルト検索条件が与えられていればコピー
+    if(!!options.search_conditions){
+      $scope.search_conditions.user_id = options.search_conditions.user_id;
+      $scope.search_conditions.skill_id = options.search_conditions.skill_id;
+      $scope.search_conditions.skill_level = options.search_conditions.skill_level;
+
+      $scope.getSkillSet();
+
+    }
   });
 })();

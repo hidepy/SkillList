@@ -54,7 +54,7 @@ class UserSkillManager extends DBManager{
         "skill_id"   => $r["skill_id"],
         "skill_name" => $r["skill_name"],
         "skill_type" => $r["type"],
-        "skill_lebel"=> $r["skill_level"],
+        "skill_level"=> $r["skill_level"],
         "skill_acquire_ym"=> $r["acquire_ym"]
       );
     }
@@ -111,6 +111,7 @@ class UserSkillManager extends DBManager{
     // 検索実行
     return $this->_getUserSkill($condition_str, $condition_params);
   }
+
 
 }
 ?>
