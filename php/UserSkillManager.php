@@ -12,57 +12,64 @@ class UserSkillManager extends DBManager{
     // 共通戻りI/Fオブジェクト
     $if_return = array("return_cd"=> 9, "msg"=> "ERROR OCCURRED...", "item"=> null);
 
-    // DB接続用Object取得
-    $dbh = $this->_open_db();
+    try{
+      // DB接続用Object取得
+      $dbh = $this->_open_db();
 
-    // 発行するクエリ
-    $query = "
-    SELECT
-      m1.user_id
-      ,m2.name
-      ,m1.skill_id
-      ,m3.skill_name
-      ,m3.type
-      ,m1.skill_level
-      ,m1.acquire_ym
-    FROM
-      m_userskill m1
-      INNER JOIN
-        m_user m2
-    	ON
-    	  m1.user_id = m2.id
-      INNER JOIN
-        m_skill m3
-    	ON
-    	  m1.skill_id = m3.skill_id
-    WHERE
-      1 = 1
-    ".$condition_str;
+      // 発行するクエリ
+      $query = "
+      SELECT
+        m1.user_id
+        ,m2.name
+        ,m1.skill_id
+        ,m3.skill_name
+        ,m3.type
+        ,m1.skill_level
+        ,m1.acquire_ym
+      FROM
+        m_userskill m1
+        INNER JOIN
+          m_user m2
+      	ON
+      	  m1.user_id = m2.id
+        INNER JOIN
+          m_skill m3
+      	ON
+      	  m1.skill_id = m3.skill_id
+      WHERE
+        1 = 1
+      ".$condition_str;
 
-    // Queryコンパイル
-    $stmt = $dbh->prepare($query);
-    // Query実行
-    $stmt->execute($params);
+      // Queryコンパイル
+      $stmt = $dbh->prepare($query);
+      // Query実行
+      $stmt->execute($params);
 
-    $res = [];
+      $res = [];
 
-    while($r = $stmt->fetch()){
-      //$res[] = $r;// 面倒なんで直接入れちゃう. と、配列側のインデックスも拾ってしまうようなんで、やっぱりプロパティでセット
-      $res[] = array(
-        "user_id"    => $r["user_id"],
-        "user_name"  => $r["name"],
-        "skill_id"   => $r["skill_id"],
-        "skill_name" => $r["skill_name"],
-        "skill_type" => $r["type"],
-        "skill_level"=> $r["skill_level"],
-        "skill_acquire_ym"=> $r["acquire_ym"]
-      );
+      while($r = $stmt->fetch()){
+        //$res[] = $r;// 面倒なんで直接入れちゃう. と、配列側のインデックスも拾ってしまうようなんで、やっぱりプロパティでセット
+        $res[] = array(
+          "user_id"    => $r["user_id"],
+          "user_name"  => $r["name"],
+          "skill_id"   => $r["skill_id"],
+          "skill_name" => $r["skill_name"],
+          "skill_type" => $r["type"],
+          "skill_level"=> $r["skill_level"],
+          "skill_acquire_ym"=> $r["acquire_ym"]
+        );
+      }
+
+      // 返却用Objにセット
+      $if_return["return_cd"] = 0;
+      $if_return["msg"] = "";
+      $if_return["item"] = $res;
+    }
+    catch(Exception $e){
+      $if_return["return_cd"] = 9;
+      $if_return["msg"] = $e->getMessage();
     }
 
-    // 返却用Objにセット
-    $if_return["return_cd"] = 0;
-    $if_return["msg"] = "";
-    $if_return["item"] = $res;
     // 解放
     $dbh = null;
 
@@ -81,7 +88,7 @@ class UserSkillManager extends DBManager{
     }
 
     // 一般的なスキル取得条件
-    $condition_keys = array("user_id"=>"m1.user_id", "skill_id"=>"m1.skill_id");
+    $condition_keys = array("user_id"=>"m1.user_id", "skill_id"=>"m1.skill_id", "depart_id"=> "m2.depart");
     $condition_str = "";
     $condition_params = array();
 
@@ -96,7 +103,7 @@ class UserSkillManager extends DBManager{
     }
 
     // スキルレベル(スキルとレベルペア)による検索条件
-    if(!isset($params["skill_id"]) && isset($params["skill_level"])){
+    if(empty($params["skill_id"]) && isset($params["skill_level"])){
       $param = explode("-", $params["skill_level"]);
 
       foreach ($param as $p) {
@@ -108,10 +115,14 @@ class UserSkillManager extends DBManager{
       }
     }
 
+    $if_return = $this->_getUserSkill($condition_str, $condition_params);
+
+    $if_return["msg"] = $condition_str;
+
+    return $if_return;
+
     // 検索実行
-    return $this->_getUserSkill($condition_str, $condition_params);
+    //return $this->_getUserSkill($condition_str, $condition_params);
   }
-
-
 }
 ?>

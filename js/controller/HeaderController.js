@@ -48,30 +48,80 @@
         return res;
       })();
 
+      // デフォルト表示タイプが設定されていなければ
+      if(!$scope.disp_condition){
+        $scope.disp_condition = "1";
+      }
+
+      // 永遠に描画されても気分が悪いので、header init終了時にnow loadingの要素は消しておく
+      angular.element(document.getElementById("initial-screen")).remove();
+
     };
 
     $scope.search_conditions = {
       user_id    : "",
       skill_id   : "",
-      skill_level: ""
+      skill_level: "",
+      depart_id  : ""
     };
 
     // 表示タイプ(0: 列挙, 1: ユーザベースで, 2: スキルベースで)
-    $scope.disp_condition = "0";
+    $scope.disp_condition = "1";
 
     $scope.getSkillSet = function(){
 
+      console.log($scope.search_conditions.skill_level);
 
+      // レベルだけ入っている場合はNG
+      if(!$scope.search_conditions.skill_id && (Number($scope.search_conditions.skill_level) > 0)){
+        showOnsDialog("スキルを入力して下さい<br>(レベル入力時)");
+        return;
+      }
+      else if(!!$scope.search_conditions.skill_id && (Number($scope.search_conditions.skill_level) > 0)){
+        var skill_id_arr = $scope.search_conditions.skill_id.split("-");
+        if(skill_id_arr.length > 1){
+          showOnsDialog("複数スキル検索時にレベル指定はできません");
+          return;
+        }
+      }
 
-      SkillSetService.getSkillSetWithCondition($scope.search_conditions)
+      modal.show();
+
+      var search_conditions = angular.copy($scope.search_conditions);
+      if(Number(search_conditions.skill_level) > 0){
+        search_conditions["skill_level"] = search_conditions["skill_id"] + ":" + search_conditions["skill_level"];
+        search_conditions["skill_id"] = "";
+      }
+
+      SkillSetService.getSkillSetWithCondition(search_conditions)
         .then(function(res){
-          // 単純に結果をコピー
-          $scope.items = res.item;
 
-          // items以外の表示方法データを更新する
-          $scope.changeDispType();
+          if(res && (res.return_cd == 0)){
+            // 単純に結果をコピー
+            $scope.items = res.item;
+
+            // items以外の表示方法データを更新する
+            $scope.changeDispType();
+          }
+          else{
+            showOnsDialog("Error Occurred..." + res.msg);
+          }
+
+          modal.hide();
+
+        }, function(err){
+          showOnsDialog("Fatal Error Occurred...");
+
+          modal.hide();
         });
-    };n
+    };
+
+    $scope.kewdownOnSearchArea = function(event){
+      // Enter押下で検索
+      if (event.which === 13) {
+        $scope.getSkillSet();
+      }
+    };
 
     // レコード表示方法(DispType)のボタン変更時イベント
     $scope.changeDispType = function(){
@@ -88,7 +138,6 @@
           $scope.items_key[v.user_id] = h;
         });
 
-        // 内部的にitems_hash作るのとmainkey_conv_hash作るので2回回しているのが気になるんだけど、目をつぶります。
         $scope.items_hash = convArr2Hash($scope.items, "skill_id");
         $scope.subkey_prop_id = "skill_id";
         $scope.subkey_prop_name = "skill_name";

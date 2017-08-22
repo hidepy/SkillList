@@ -8,22 +8,29 @@ class MasterManager extends DBManager{
   }
 
   public function getAllMaster(){
-    // 複数回マスタ参照するんで先にopenしておく
-    $dbh = $this->_open_db();
-
     $if_return = array("return_cd"=> 0, "msg"=> "", "item"=> null);
 
-    $skills  = $this->getSkillMaster();
-    $users   = $this->getUserMaster();
-    $departs = $this->getDepartMaster();
+    try{
 
-    $wrapper = array(
-      "skills"=> ($skills && $skills["return_cd"] == "0") ? $skills["item"] : array(),
-      "users"=> ($users && $users["return_cd"] == "0") ? $users["item"] : array(),
-      "departs"=> ($departs && $departs["return_cd"] == "0") ? $departs["item"] : array(),
-    );
+      // 複数回マスタ参照するんで先にopenしておく
+      $dbh = $this->_open_db();
 
-    $if_return["item"] = $wrapper;
+      $skills  = $this->getSkillMaster();
+      $users   = $this->getUserMaster();
+      $departs = $this->getDepartMaster();
+
+      $wrapper = array(
+        "skills"=> ($skills && $skills["return_cd"] == "0") ? $skills["item"] : array(),
+        "users"=> ($users && $users["return_cd"] == "0") ? $users["item"] : array(),
+        "departs"=> ($departs && $departs["return_cd"] == "0") ? $departs["item"] : array(),
+      );
+
+      $if_return["item"] = $wrapper;
+    }
+    catch(Exception $e){
+      $if_return["return_cd"] = 9;
+      $if_return["msg"] = $e->getMessage();
+    }
 
     $dbh = null;
 

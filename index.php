@@ -4,6 +4,13 @@ session_start();
 
 // セッションはこんな感じで使う
 $_SESSION["imtasokori"] = "test";
+
+$accept_display = 0;
+if(!empty($_SERVER["HTTPS"])){
+  $accept_display = 1;
+}
+// local用
+$accept_display = 1;
 ?>
 
 <html>
@@ -38,19 +45,63 @@ $_SESSION["imtasokori"] = "test";
     <script src="js/controller/DetailController.js"></script>
   </head>
 
-  <body ng-controller="RootController" ng-init="init()">
+  <body ng-controller="RootController" ng-init="init(<?php echo $accept_display ?>)">
     <!-- Entry View Page -->
     <ons-navigator var="myNavigator"></ons-navigator>
 
-    Now Loading...
-
-    <ons-toolbar id="h-head-toolbar">
-        <div class="left">
-          <h2 >Skill List</h2>
+    <ons-toolbar id="h-head-toolbar" class="toolbar toolbar--material ">
+        <div class="toolbar--material__left left">
+          Skill List
         </div>
-        <div class="right">
-          <ons-toolbar-button ng-click='myNavigator.resetToPage("view/main.html")'><ons-icon icon="md-home" size="32px"></ons-icon></ons-toolbar-button>
+        <div class="toolbar--material__right right">
+          <ons-toolbar-button ng-click='myNavigator.resetToPage("view/main.html")'><ons-icon icon="md-home" size="32px" style="color: #fff"></ons-icon></ons-toolbar-button>
         </div>
     </ons-toolbar>
+
+    <ons-bottom-toolbar id="h-foot-toolbar">
+      <div>
+        <p>powered by Angular.js + OnsenUI</p>
+        <p>hideyuki.kawamura(379) created @2017/08/20</p>
+      </div>
+    </ons-bottom-toolbar>
+
+    <div id="initial-screen">
+      <?php
+      if($accept_display == 1){
+        echo '
+        <div>
+          <span>
+            Now Loading...
+          </span>
+          <svg class="progress-circular progress-circular--indeterminate">
+            <circle class="progress-circular__background"/>
+            <circle class="progress-circular__primary progress-circular--indeterminate__primary"/>
+            <circle class="progress-circular__secondary progress-circular--indeterminate__secondary"/>
+          </svg>
+        </div>
+        ';
+      }
+      else{
+        echo "<div>HTTPでのアクセスは許可されていません. HTTPSでアクセスしてください</div>";
+      }
+      ?>
+    </div>
+
+    <!-- modal -->
+    <ons-modal var="modal">
+      <ons-icon icon="ion-load-c" spin="true"></ons-icon>
+      Please wait...
+    </ons-modal>
+
+    <!-- alert dialog -->
+    <ons-alert-dialog var="alertDialog">
+      <div class="alert-dialog-content alert-dialog-content--material">
+        <span id="alertDialog-content"></span>
+      </div>
+      <div class="alert-dialog-footer alert-dialog-footer--material">
+        <button class="alert-dialog-button alert-dialog-button--material" ng-click="alertDialog.hide()">close</button>
+      </div>
+    </ons-alert-dialog>
+
   </body>
 </html>

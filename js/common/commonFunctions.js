@@ -33,5 +33,8 @@ function convArr2Hash(list, key){
 	}
 
 	return hash;
-
+}
+function showOnsDialog(msg){
+	document.getElementById("alertDialog-content").innerHTML = msg;
+	alertDialog.show();
 }

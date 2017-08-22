@@ -4,13 +4,6 @@
   angular.module('SKILL-LIST-APP')
     .controller('RootController', function($scope, SkillSetService) {
 
-      // メッセージ表示に関するobject
-      $scope.message_info = {
-          message: "",
-          show: false,
-          status: ""
-      };
-
       // スキル種別翻訳用
       $scope.skill_type_hash = {
         L: "プログラミング言語",
@@ -31,8 +24,14 @@
       $scope.com_user_name = {};
 
       // ---------- methods ----------
-      $scope.init = function(){
+      $scope.init = function(protcol_type){
         console.log("root initialized");
+
+        console.log(protcol_type);
+
+        if(protcol_type != 1){
+          return;
+        }
 
         // 取得されていなければリストを作成
         SkillSetService.getAllMasterInfo()
@@ -43,7 +42,7 @@
               // マスタ情報を取得
               $scope.com_skill_list = angular.copy(res.item.skills);
               $scope.com_user_list = angular.copy(res.item.users);
-              $scope.com_depart_list = angular.copy(res.item.depart);
+              $scope.com_depart_list = angular.copy(res.item.departs);
 
               // マスタハッシュを作成
               $scope.com_skill_hash = convArr2Hash(
@@ -63,15 +62,6 @@
             // エラー側ハンドラ
             $scope.showMessage("SelectList Initialization Failure...");
           });
-      };
-
-      $scope.showMessage = function(message, status){
-          $scope.message_info.message = message;
-          $scope.message_info.status = status || "alert-info";
-          $scope.message_info.show = true;
-          $timeout(function(){
-              $scope.message_info.show = false;
-          }, 3000);
       };
 
       $scope.move2Head = function(type, id){
