@@ -1,6 +1,9 @@
 body{
-  font-family: Avenir, "Open Sans", "Helvetica Neue", Helvetica, Arial, Verdana, Roboto, "Yu Gothic", "YuGothic", Meiryo, "Hiragino Kaku Gothic Pro", "MS PGothic", sans-serif !important;
+  font-family: Meiryo, "メイリオ", "Open Sans", "Helvetica Neue", Helvetica, Arial, Verdana, Roboto, "Yu Gothic", "YuGothic", "Hiragino Kaku Gothic Pro", "MS PGothic", sans-serif !important;
   padding: 8px;
+}
+body ons-page{
+  font-family: Meiryo, "メイリオ", "Open Sans", "Helvetica Neue", Helvetica, Arial, Verdana, Roboto, "Yu Gothic", "YuGothic", "Hiragino Kaku Gothic Pro", "MS PGothic", sans-serif !important;
 }
 body a{
   font-family: Meiryo !important;
@@ -67,6 +70,10 @@ ul > li .sep-main{
   font-size: 32px;
 }
 
+#h-disp-condition-wrapper .segment{
+  width: 100%;
+}
+
 .large-button-wrapper{
   margin-top: 2px;
   margin-bottom: 2px;
@@ -76,7 +83,6 @@ ul > li .sep-main{
   margin-left: 0;
   margin-right: 0;
 }
-
 
 #h-search-conditions-wrapper{
   margin-bottom: 8px;
@@ -114,11 +120,13 @@ ul > li .sep-main{
 }
 
 @media screen and (min-width:480px) {
-
   .large-button-wrapper > .button{
     width: 100%;
     margin-left: 0;
     margin-right: 0;
+  }
+  #h-disp-condition-wrapper .segment{
+    width: 100%;
   }
 }
 @media screen and (min-width:768px) and ( max-width:1024px) {
@@ -127,9 +135,19 @@ ul > li .sep-main{
     margin-left: 10%;
     margin-right: 10%;
   }
+  #h-disp-condition-wrapper .segment{
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+  }
 }
 @media screen and (min-width:1024px) {
   .large-button-wrapper > .button{
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
+  }
+  #h-disp-condition-wrapper .segment{
     width: 50%;
     margin-left: 25%;
     margin-right: 25%;
