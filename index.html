@@ -1,18 +1,3 @@
-<?php
-// 全ユーザ対象にセッションを開始する
-session_start();
-
-// セッションはこんな感じで使う
-$_SESSION["imtasokori"] = "test";
-
-$accept_display = 0;
-if(!empty($_SERVER["HTTPS"])){
-  $accept_display = 1;
-}
-// local用
-$accept_display = 1;
-?>
-
 <html>
   <head>
     <meta charset="utf-8">
@@ -24,6 +9,9 @@ $accept_display = 1;
     <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.css" />
 
     <link rel="stylesheet" href="css/main.css" />
+
+    <link rel="stylesheet" href="lib/slick/slick.grid.css" type="text/css"/>
+    <link rel="stylesheet" href="css/smoothness/jquery-ui-1.8.16.custom.css" type="text/css"/>
 
     <script src="js/common/commonFunctions.js"></script>
 
@@ -38,11 +26,20 @@ $accept_display = 1;
 
     <!-- Service -->
     <script src="js/service/SkillSetService.js"></script>
+    <script src="js/service/SkillSheetService.js"></script>
 
     <!-- Controller -->
     <script src="js/controller/RootController.js"></script>
     <script src="js/controller/HeaderController.js"></script>
     <script src="js/controller/DetailController.js"></script>
+    <script src="js/controller/SkillSheetController.js"></script>
+
+    <script src="lib/jquery-1.7.min.js"></script>
+    <script src="lib/jquery.event.drag-2.2.js"></script>
+
+    <script src="lib/slick/slick.core.js"></script>
+    <script src="lib/slick/slick.grid.js"></script>
+
   </head>
 
   <body ng-controller="RootController" ng-init="init()">
