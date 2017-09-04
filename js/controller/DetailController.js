@@ -17,7 +17,7 @@
         nendo: null,
         skills: []
       };
-      // 基本情報リスト表示用の定義(User側)
+      // 表示定義
       $scope.user_info_disp_definition = [];
 
       // Display skill info
@@ -58,6 +58,7 @@
                 $scope.user_info.nendo = data.nendo;
               }
 
+              // ユーザ情報表示定義
               $scope.user_info_disp_definition = [
                 {"name": "社員ID", "description": $scope.user_info.user_id},
                 {"name": "所属部署", "description": "" + $scope.user_info.depart_name + "(" + $scope.user_info.depart_id + ")"},

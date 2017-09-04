@@ -40,6 +40,20 @@ ons-page{
   border-bottom: solid 1px #19B6A8;/*左線*/
 }
 
+.home-button{
+  height: 128px;
+  width: 50%;
+  margin: 4px 0;
+  text-align: center;
+  padding-top: 32px;
+  background-color: #fdfdfd;
+  color: #009688;
+  border: solid 2px #009688;
+}
+.home-button-wide{
+  width: 100%;
+}
+
 .list > .list-item > div > span{
   width: 50%;
 }

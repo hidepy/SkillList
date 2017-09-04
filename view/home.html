@@ -1,0 +1,35 @@
+<ons-page id="home-wrapper">
+
+  <div>
+    <h2>{{login_user_info.name}}</h2>
+
+    <h3 class="heading">基本情報</h3>
+
+    <ul class="list">
+      <li class="list-item" ng-repeat="v in com_user_info_disp_definition">
+        <div class="list-item__center">
+          <span>{{v.name}}</span>
+          <span>{{v.description}}</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <ons-button class="home-button home-button-wide" ng-click="move2Head('')">
+    <ons-icon icon="search" size="48px" style="color: #009688"></ons-icon>
+    <p>社員スキルを検索する</p>
+  </ons-button>
+  <div style="display: flex; justify-content: space-between">
+    <ons-button class="home-button">
+      <ons-icon icon="file-o" size="48px" style="color: #009688"></ons-icon>
+      <ons-icon icon="plus" size="48px" style="color: #009688"></ons-icon>
+      <p>スキルシートを更新する</p>
+    </ons-button>
+    <ons-button class="home-button">
+      <ons-icon icon="book" size="48px" style="color: #009688"></ons-icon>
+      <ons-icon icon="search" size="48px" style="color: #009688"></ons-icon>
+      <p>スキルシートを照会する</p>
+    </ons-button>
+  </div>
+
+</ons-page>

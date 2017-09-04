@@ -51,10 +51,15 @@ $accept_display = 1;
 
     <ons-toolbar id="h-head-toolbar" class="toolbar toolbar--material ">
         <div class="toolbar--material__left left">
-          Skill List
+          スキル検索
         </div>
         <div class="toolbar--material__right right">
-          <ons-toolbar-button ng-click='myNavigator.resetToPage("view/main.html")'><ons-icon icon="md-home" size="32px" style="color: #fff"></ons-icon></ons-toolbar-button>
+          <ons-toolbar-button ng-click='myNavigator.resetToPage("view/home.html")'>
+            <ons-icon icon="md-home" size="32px" style="color: #fff"></ons-icon>
+          </ons-toolbar-button>
+          <ons-toolbar-button ng-click='myNavigator.resetToPage("view/main.html")'>
+            <ons-icon icon="search" size="32px" style="color: #fff"></ons-icon>
+          </ons-toolbar-button>
         </div>
     </ons-toolbar>
 
