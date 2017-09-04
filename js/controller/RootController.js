@@ -61,7 +61,10 @@
             myNavigator.resetToPage("view/home.html");
           }, function(err){
             // エラー側ハンドラ
-            $scope.showMessage("SelectList Initialization Failure...");
+            showOnsDialog("SelectList Initialization Failure...");
+
+            // 一旦エラーだった場合もhomeへ転送する(local用)
+            myNavigator.resetToPage("view/home.html");
           });
       };
 

@@ -62,6 +62,24 @@
           });
         };
 
+        this.getSkillSheetInfo = function(params){
+            return new Promise(function(resolve, reject){
+                resolve({
+                    "data": [
+                        {id: "000010", level: 4},
+                        {id: "000040", level: 3},
+                        {id: "000050", level: 3},
+                        {id: "000130", level: 4},
+                        {id: "000131", level: 3},
+                        {id: "000134", level: 2},
+                        {id: "000140", level: 4},
+                        {id: "000141", level: 3},
+                        {id: "000142", level: 3},
+                        {id: "000150", level: 4}
+                    ]
+                });
+            });
+        };
 
     });
 })();
