@@ -86,7 +86,8 @@ function script_url() {
 ///////////////////////////////////////////////////////////////////////////
 
 // !! 他のスクリプトからインクルードされている場合はここでこのスクリプトを終了して処理を戻す !!
-if ( __FILE__ != str_replace("/", "\\", $_SERVER["SCRIPT_FILENAME"]) ) return;
+// 2017/08/21 一旦コメントアウト
+//if ( __FILE__ != str_replace("/", "\\", $_SERVER["SCRIPT_FILENAME"]) ) return;
 ///////////////////////////////////////////////////////////////////////////
 // リクエストの処理を開始。メソッドとパスから適切な処理に分岐する
 $method = $_SERVER["REQUEST_METHOD"];
@@ -95,6 +96,7 @@ $params = Array();  // preg_match_allの結果を受け取るArray
 
 // ルーティング本処理
 
+// スキルセット取得. 各種パラメータによってスキルを検索
 if (preg_match_all("/^\/skillset$/", $path, $params)) {
 
     if ($method == "GET") {
@@ -109,6 +111,20 @@ if (preg_match_all("/^\/skillset$/", $path, $params)) {
     } else {
         throw new HttpErrorStatus("Method Not Allowed", 405);
     }
+}
+// スキルシート取得用. ユーザidが必須
+else if (preg_match_all("/^\/skillsheet\/([0-9]+)$/", $path, $params)) {
+
+    if (($method == "GET") && (count($params) >= 2)) {
+      // ユーザ情報取得
+      $usm = new UserSkillManager();
+      response_json($usm->getSkillSheet($params[1][0]));
+      exit;
+    }
+    else {
+        throw new HttpErrorStatus("Method Not Allowed", 405);
+    }
+
 }
 else if(preg_match_all("/^\/master$/", $path, $params)){
   if ($method == "GET") {

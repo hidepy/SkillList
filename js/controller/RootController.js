@@ -13,6 +13,24 @@
         O: "OS"
       };
 
+      // ログインユーザ情報
+      $scope.login_user_info = {
+        user_id: "379",
+        user_name: "hideyuki.kawamura",
+        depart_id: "",
+        depart_name: "",
+        is_midcarrer: false,
+        nendo: null,
+        skills: []
+      };
+
+      // ユーザ情報表示定義
+      $scope.com_user_info_disp_definition = [
+        {"name": "社員ID", "description": $scope.login_user_info.user_id},
+        {"name": "所属部署", "description": "" + $scope.login_user_info.depart_name + "(" + $scope.login_user_info.depart_id + ")"},
+        {"name": "入社年度", "description": "" + $scope.login_user_info.nendo + ($scope.login_user_info.is_midcarrer ? "[中途]" : "")}
+      ];
+
       // スキルマスタリスト
       $scope.com_skill_list = [];
       $scope.com_skill_hash = {};
@@ -30,7 +48,7 @@
         console.log(protcol_type);
 
         if(protcol_type != 1){
-          //return;
+          return;
         }
 
         // 取得されていなければリストを作成
@@ -59,17 +77,11 @@
             // 準備ができたらNavogatorにエントリポイントを仕掛ける
             //myNavigator.resetToPage("view/main.html");
             myNavigator.resetToPage("view/home.html");
+
           }, function(err){
             // エラー側ハンドラ
-            showOnsDialog("SelectList Initialization Failure...");
-
-            // 一旦エラーだった場合もhomeへ転送する(local用)
-            myNavigator.resetToPage("view/home.html");
+            $scope.showMessage("SelectList Initialization Failure...");
           });
-      };
-
-      $scope.move2SkillSheet = function(){
-        myNavigator.pushPage("view/skill-sheet.html");
       };
 
       $scope.move2Head = function(type, id){
@@ -104,5 +116,14 @@
           }
         });
       };
+
+      $scope.move2SkillSheet = function(type){
+        myNavigator.pushPage("view/skill-sheet.html", {
+          data: {
+            type: type
+          }
+        });
+      };
+
     })
 })();

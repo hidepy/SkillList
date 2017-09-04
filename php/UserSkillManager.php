@@ -124,5 +124,69 @@ class UserSkillManager extends DBManager{
     // 検索実行
     //return $this->_getUserSkill($condition_str, $condition_params);
   }
+
+  // ユーザのスキルシート表示用
+  public function getSkillSheet($user_id){
+    // 共通戻りI/Fオブジェクト
+    $if_return = array("return_cd"=> 9, "msg"=> "ERROR OCCURRED...", "item"=> null);
+
+    try{
+      // DB接続用Object取得
+      $dbh = $this->_open_db();
+
+      // 発行するクエリ
+      $query = "
+      SELECT
+        m1.skill_id
+        ,m1.skill_name
+        ,m1.type
+        ,COALESCE(m2.skill_level, 0) as skill_level
+        ,COALESCE(m2.acquire_ym, '') as acquire_ym
+      FROM
+        m_skill m1
+        LEFT OUTER JOIN
+          m_userskill m2
+          ON
+            m1.skill_id = m2.skill_id
+      	    AND m2.user_id = :user_id
+      ORDER BY
+        m1.skill_id
+      ";
+
+      // Queryコンパイル
+      $stmt = $dbh->prepare($query);
+      // Query実行
+      $stmt->execute(array("user_id"=> $user_id));
+      //$stmt->execute();
+
+      $res = [];
+
+      while($r = $stmt->fetch()){
+        //$res[] = $r;// 面倒なんで直接入れちゃう. と、配列側のインデックスも拾ってしまうようなんで、やっぱりプロパティでセット
+        $res[] = array(
+          "skill_id"   => $r["skill_id"],
+          "skill_name" => $r["skill_name"],
+          "skill_type" => $r["type"],
+          "skill_level"=> $r["skill_level"],
+          "skill_acquire_ym"=> $r["acquire_ym"]
+        );
+      }
+
+      // 返却用Objにセット
+      $if_return["return_cd"] = 0;
+      $if_return["msg"] = "";
+      $if_return["item"] = $res;
+    }
+    catch(Exception $e){
+      $if_return["return_cd"] = 9;
+      $if_return["msg"] = $e->getMessage();
+    }
+
+    // 解放
+    $dbh = null;
+
+    return $if_return;
+  }
+
 }
 ?>

@@ -1,11 +1,44 @@
 <ons-page ng-controller="SkillSheetController" ng-init="skillsheet_init()">
 
-  <table style='float: left; height: 100%, width: 30%' ng-repeat="type in skill_types">
-    <tr ng-repeat="item in skill_list[type]">
-      <td ng-hide="true">{{item.id}}</td>
-      <td>{{item.name}}</td>
-      <td><input type="text" ng-model="item." /></td>
+  <style>
+  tr[data-skilllevel]{
+    border-top: solid 1px #333;
+    border-bottom: solid 1px #333;
+  }
+  tr[data-skilllevel='0']{
+    background-color: #a0a0a0;
+    color: #484848;
+  }
+  tr[data-skilllevel='1']{
+    background-color: #bebebe;
+    color: #505050
+  }
+  tr[data-skilllevel='2']{
+    background-color: #ddd;
+    color: #606060;
+  }
+  tr[data-skilllevel='3']{
+    background-color: #ebebeb;
+  }
+  tr[data-skilllevel='4']{
+    background-color: #fff;
+  }
+  </style>
+
+  <table style='float: left; width: 20%; ' ng-repeat="type in skill_types">
+    <thead>
+      <tr>
+        <th>{{type.name}}</th>
+      </tr>
+    </thead>
+    <tr ng-repeat="item in skill_list[type.id]" data-skilllevel={{item.skill_level}}>
+      <td ng-hide="true">{{item.skill_id}}</td>
+      <td style="overflow: hidden; word-break: break-all; height: 1.6em; display: block;">{{item.skill_name}}</td>
+      <td>
+        <input ng-show="proc_type=='1'" type="number" min="0" max="4" class="sks-skill-level-text" ng-model="item.skill_level" />
+        <input ng-show="proc_type=='0'" class="sks-skill-level-text" disabled ng-model="item.skill_level" />
+      </td>
     </tr>
   </table>
-  
+
 </ons-page>

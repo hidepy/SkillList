@@ -1,0 +1,128 @@
+<ons-page ng-controller="HeaderController" ng-init="h_init()">
+
+  <div id="h-wrapper">
+    <div id="h-conditions-wrapper" ng-hide="type=='S'">
+      <h3 class="heading">????</h3>
+
+      <div id="h-search-conditions-wrapper" ng-keydown="kewdownOnSearchArea($event)">
+        <ons-row>
+          <ons-col id="h-search-conditions-user">
+            <h4 class="sub-heading">??????</h4>
+                <span class="label">??ID</span>
+                <input id="h-search-condition-user_id" ng-model="search_conditions.user_id" />
+          </ons-col>
+
+          <ons-col id="h-search-conditions-skill">
+            <h4 class="sub-heading">???????</h4>
+
+            <span class="label">
+              ???<span class="fontsize-small">(FirefoxNG)</span>
+            </span>
+
+            <input list="h-search-condition-skill_list" ng-model="search_conditions.skill_id" />
+            <datalist id="h-search-condition-skill_list">
+              <option ng-repeat="item in select_lists.skill_single" value="{{item.id}}">
+                {{item.name}}
+              </option>
+            </datalist>
+
+            <span class="label">???
+              <span class="fontsize-small">(??)</span>
+            </span>
+            <input id="h-search-condition-skill_level" type="number" min="0" max="4" ng-model="search_conditions.skill_level" />
+          </ons-col>
+        </ons-row>
+
+        <ons-row>
+          <ons-col id="h-search-conditions-depart">
+            <h4 class="sub-heading">??????</h4>
+            <span class="label">??</span>
+
+            <input list="h-search-condition-depart_list" ng-model="search_conditions.depart_id" />
+            <datalist id="h-search-condition-depart_list">
+              <option ng-repeat="item in select_lists.depart" value="{{item.id}}">
+                {{item.name}}
+              </option>
+            </datalist>
+          </ons-col>
+        </ons-row>
+      </div>
+
+      <div id="h-search-button-wrapper" class="large-button-wrapper">
+        <ons-button class="button button--material" ng-click="getSkillSet()">Search</ons-button>
+      </div>
+
+      <div id="h-disp-condition-wrapper">
+        <h3 class="heading">???????</h3>
+
+        <div class="segment segment--material">
+          <div class="segment__item segment--material__item">
+            <input type="radio" class="segment__input segment--material__input" value="1" name="h-disp-condition" ng-model="disp_condition" ng-change="changeDispType()" />
+            <button class="segment__button segment--material__button">?????????????</button>
+          </div>
+          <div class="segment__item segment--material__item">
+            <input type="radio" class="segment__input segment--material__input" value="2" name="h-disp-condition" ng-model="disp_condition" ng-change="changeDispType()" />
+            <button class="segment__button segment--material__button">?????????????</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="h-user-skill-wrapper">
+
+      <h3 class="heading">?????</h3>
+
+      <ons-row ng-repeat="(key, item) in items_key track by $index" ng-hide="disp_condition==0" class="h-user-skill-row">
+
+        <ons-col class="h-user-skill-row-parent">
+          <div>
+              <a href="javascript:void(0)" ng-click="move2Detail(disp_condition==1 ? 'U' : 'S', key)">
+                <span class="fontsize-small">{{key}}</span>:{{mainkey_conv_hash[key]["name"]}}
+              </a>
+          </div>
+        </ons-col>
+
+        <ons-col>
+          <ul class="list">
+            <li ng-repeat="id in item track by $index" class="item-list">
+              <div class="list-item__center">
+                <span class="sep-main">
+                  <a href="javascript:void(0)" ng-click="move2Detail(disp_condition==2 ? 'U' : 'S', items_hash[id][subkey_prop_id])">
+                    <span class="fontsize-small">{{items_hash[id][subkey_prop_id]}}</span>:{{items_hash[id][subkey_prop_name]}}
+                  </a>
+                </span>
+                <span>
+                  {{items_hash[id]["skill_level"]}}
+                </span>
+              </div>
+            </li>
+          </ul>
+        </ons-col>
+      </ons-row>
+
+      <!-- DEPLICATED!!!! -->
+      <ons-row ng-repeat="item in items" ng-show="disp_condition==0">
+        <ons-col class="list-head">
+          <a href="javascript:void(0)" ng-click="move2Detail('U', item.user_id)">
+            <span class="fontsize-small">{{item.user_id}}</span>:{{item.user_name}}
+          </a>
+        </ons-col>
+        <ons-col class="list-detail">
+          <ons-col>
+            <div class="">
+              <a href="javascript:void(0)" ng-click="move2Detail('S', item.skill_id)">
+                {{item.skill_name}}
+              </a>
+            </div>
+          </ons-col>
+        </ons-col>
+      </ons-row>
+
+    </div>
+
+    <div ng-show="type!=''" class="large-button-wrapper">
+      <ons-button  class="button button--material" ng-click="myNavigator.popPage()">??</ons-button>
+    </div>
+
+  </div>
+</ons-page>

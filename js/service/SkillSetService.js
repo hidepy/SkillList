@@ -13,6 +13,15 @@
             });
         };
 
+        // SkillSheet情報を取得する
+        this.getSkillSheetByUserId = function(user_id){
+          return $http.get("php/router.php/skillsheet/" + user_id)
+            .then(function(response){
+              return response.data || [];
+            });
+        };
+
+        // Master情報を取得する
         this.getAllMasterInfo = function(){
           return $http.get("php/router.php/master")
             .then(function(response){

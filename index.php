@@ -41,29 +41,26 @@ $accept_display = 1;
 
     <!-- Controller -->
     <script src="js/controller/RootController.js"></script>
+    <script src="js/controller/SkillSheetController.js"></script>
     <script src="js/controller/HeaderController.js"></script>
     <script src="js/controller/DetailController.js"></script>
   </head>
 
-  <body ng-controller="RootController" ng-init="init()">
+  <body ng-controller="RootController" ng-init="init(<?php echo $accept_display ?>)">
     <!-- Entry View Page -->
     <ons-navigator var="myNavigator"></ons-navigator>
 
     <ons-toolbar id="h-head-toolbar" class="toolbar toolbar--material ">
         <div class="toolbar--material__left left">
-          スキル検索
+          スキルポータル(β)
         </div>
         <div class="toolbar--material__right right">
-<<<<<<< HEAD:index.php
           <ons-toolbar-button ng-click='myNavigator.resetToPage("view/home.html")'>
             <ons-icon icon="md-home" size="32px" style="color: #fff"></ons-icon>
           </ons-toolbar-button>
           <ons-toolbar-button ng-click='myNavigator.resetToPage("view/main.html")'>
             <ons-icon icon="search" size="32px" style="color: #fff"></ons-icon>
           </ons-toolbar-button>
-=======
-          <ons-toolbar-button ng-click='myNavigator.resetToPage("view/home.html")'><ons-icon icon="md-home" size="32px" style="color: #fff"></ons-icon></ons-toolbar-button>
->>>>>>> 0a3d3fefb24e5040810c1adc6971c43d5454f2b7:index-bk.php
         </div>
     </ons-toolbar>
 
@@ -75,16 +72,25 @@ $accept_display = 1;
     </ons-bottom-toolbar>
 
     <div id="initial-screen">
-      <div>
-        <span>
-          Now Loading...
-        </span>
-        <svg class="progress-circular progress-circular--indeterminate">
-          <circle class="progress-circular__background"/>
-          <circle class="progress-circular__primary progress-circular--indeterminate__primary"/>
-          <circle class="progress-circular__secondary progress-circular--indeterminate__secondary"/>
-        </svg>
-      </div>
+      <?php
+      if($accept_display == 1){
+        echo '
+        <div>
+          <span>
+            Now Loading...
+          </span>
+          <svg class="progress-circular progress-circular--indeterminate">
+            <circle class="progress-circular__background"/>
+            <circle class="progress-circular__primary progress-circular--indeterminate__primary"/>
+            <circle class="progress-circular__secondary progress-circular--indeterminate__secondary"/>
+          </svg>
+        </div>
+        ';
+      }
+      else{
+        echo "<div>HTTPでのアクセスは許可されていません. HTTPSでアクセスしてください</div>";
+      }
+      ?>
     </div>
 
     <!-- modal -->

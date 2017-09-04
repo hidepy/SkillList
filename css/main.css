@@ -120,6 +120,10 @@ ul > li .sep-main{
   font-size: 120%;
 }
 
+.sks-skill-level-text{
+  width: 36px;
+}
+
 #h-foot-toolbar{
   background-color: #009688;
   height: 36px;

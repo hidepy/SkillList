@@ -1,31 +1,43 @@
 (function(){
   'use strict';
 
-	angular.module('SKILL-LIST-APP').controller('SkillSheetController', function($scope, SkillSheetService) {
+	angular.module('SKILL-LIST-APP').controller('SkillSheetController', function($scope, SkillSetService) {
 
-		$scope.skill_types = ["lang", "db", "os"];
+    // 画面タイプ 0=照会, 1=更新
+    $scope.proc_type = "0";
+
+		$scope.skill_types = [
+      {id: "L", name: "言語"},
+      {id: "D", name: "DB"},
+      {id: "F", name: "フレームワーク"},
+      {id: "O", name: "OS"},
+      {id: "E", name: "その他スキル"}
+    ];
 
 		$scope.skill_list = {
 		};
 
-		var _skill_list_hash = {};
-
 		$scope.skillsheet_init = function(){
-			SkillSheetService
-				.getSkillSheetMaster()
-					.then(function(res){
-						$scope.skill_list = res;
-					})
-				.getSkillSheetInfo()
-					.then(function(res){
-						if(res){
 
-							
-							convArr2Hash(list, key){
-						}
-						$scope.$apply();
-					})
-				;
+      var options = myNavigator.topPage.data || {};
+      $scope.proc_type = (options.type == "1") ? "1" : "0";// 0 or 1に寄せる
+
+			SkillSetService
+				.getSkillSheetByUserId($scope.login_user_info.user_id)
+					.then(function(res){
+
+            var list = res.item;
+
+            $scope.skill_types.forEach((v)=>{
+              $scope.skill_list[v.id] = [];
+            });
+
+            (list || []).forEach((v)=>{
+              v.skill_level = Number(v.skill_level) || 0;
+              ($scope.skill_list[v.skill_type]).push(v);
+            });
+
+					});
 		};
 
   });
