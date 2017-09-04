@@ -1,0 +1,11 @@
+<ons-page ng-controller="SkillSheetController" ng-init="skillsheet_init()">
+
+  <table style='float: left; height: 100%, width: 30%' ng-repeat="type in skill_types">
+    <tr ng-repeat="item in skill_list[type]">
+      <td ng-hide="true">{{item.id}}</td>
+      <td>{{item.name}}</td>
+      <td><input type="text" ng-model="item." /></td>
+    </tr>
+  </table>
+  
+</ons-page>

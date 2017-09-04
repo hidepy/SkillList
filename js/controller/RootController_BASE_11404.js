@@ -30,7 +30,7 @@
         console.log(protcol_type);
 
         if(protcol_type != 1){
-          //return;
+          return;
         }
 
         // 取得されていなければリストを作成
@@ -57,23 +57,15 @@
             }
 
             // 準備ができたらNavogatorにエントリポイントを仕掛ける
-            //myNavigator.resetToPage("view/main.html");
-            myNavigator.resetToPage("view/home.html");
+            myNavigator.resetToPage("view/main.html");
           }, function(err){
             // エラー側ハンドラ
-            showOnsDialog("SelectList Initialization Failure...");
-
-            // 一旦エラーだった場合もhomeへ転送する(local用)
-            myNavigator.resetToPage("view/home.html");
+            $scope.showMessage("SelectList Initialization Failure...");
           });
       };
 
-      $scope.move2SkillSheet = function(){
-        myNavigator.pushPage("view/skill-sheet.html");
-      };
-
       $scope.move2Head = function(type, id){
-        var search_conditions;
+        var search_conditions = {};
 
         if(type == "S"){
           search_conditions["skill_id"] = id;

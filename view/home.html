@@ -1,35 +1,30 @@
-<ons-page id="home-wrapper">
+<ons-page id="home-wrapper" ng-init="home_init()" style="margin-top: 64px">
 
-  <div>
-    <h2>{{login_user_info.name}}</h2>
+  <style>
+  #home-wrapper > .button{
+    height: 128px;
+    width: 49.6%;
+    margin: 4px 0;
+  }
+  #home-wrapper > .button.large{
+    width: 100%;
+  }
+  </style>
 
-    <h3 class="heading">基本情報</h3>
+  <div id="home-wrapper">
 
-    <ul class="list">
-      <li class="list-item" ng-repeat="v in com_user_info_disp_definition">
-        <div class="list-item__center">
-          <span>{{v.name}}</span>
-          <span>{{v.description}}</span>
-        </div>
-      </li>
-    </ul>
-  </div>
+    <button class="button button--material large" ng-click="move2Head()" >
+      <ons-icon icon="search" size="32px" style="color: #fff"></ons-icon>検索する
+    </button>
 
-  <ons-button class="home-button home-button-wide" ng-click="move2Head('')">
-    <ons-icon icon="search" size="48px" style="color: #009688"></ons-icon>
-    <p>社員スキルを検索する</p>
-  </ons-button>
-  <div style="display: flex; justify-content: space-between">
-    <ons-button class="home-button">
-      <ons-icon icon="file-o" size="48px" style="color: #009688"></ons-icon>
-      <ons-icon icon="plus" size="48px" style="color: #009688"></ons-icon>
-      <p>スキルシートを更新する</p>
-    </ons-button>
-    <ons-button class="home-button">
-      <ons-icon icon="book" size="48px" style="color: #009688"></ons-icon>
-      <ons-icon icon="search" size="48px" style="color: #009688"></ons-icon>
-      <p>スキルシートを照会する</p>
-    </ons-button>
+    <button class="button button--material" ng-click="move2SkillSheet()">
+      <ons-icon icon="question-circle" size="32px" style="color: #fff"></ons-icon>スキルシートを照会する
+    </button>
+
+    <button class="button button--material">
+      <ons-icon icon="question-circle" size="32px" style="color: #fff"></ons-icon>スキルシートを登録する
+    </button>
+
   </div>
 
 </ons-page>
