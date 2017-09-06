@@ -80,12 +80,13 @@
 
           }, function(err){
             // エラー側ハンドラ
-            $scope.showMessage("SelectList Initialization Failure...");
+            showOnsDialog("SelectList Initialization Failure...");
           });
       };
 
       // 戻るボタンの横取り
       $scope.$on('$locationChangeStart', function(event, next, current){
+        alert("comes");
         if(myNavigator.pages.length > 1){
           myNavigator.popPage();
           alert("backbutton get ok");

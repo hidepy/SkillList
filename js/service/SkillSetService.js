@@ -23,12 +23,18 @@
 
         // SkillSheet情報を更新する
         this.updateSkillSheet = function(skill_list){
-          return new Promise(function(resolve, reject){
-            resolve({
-              return_cd: 0,
-              msg: "success!!"
-            });
-          });
+
+          var postData = 'skillsheet_data=' + JSON.stringify(skill_list);
+          return $http({
+              method : "POST",
+              url : "php/router.php/skillsheet/",
+              data: postData,
+              headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+            })
+              .then(function(response){
+                return response.data || [];
+              })
+          ;
         };
 
         // Master情報を取得する

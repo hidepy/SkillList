@@ -217,8 +217,15 @@ class UserSkillManager extends DBManager{
       // 発行するクエリ
       $query = "";
 
+      $acquire_ym = "291709";
+
       // トランザクション開始
       $dbh->beginTransaction();
+
+      $query_delete = "DELETE FROM m_userskill WHERE user_id = '".$user_id."' AND acquire_ym = '".$acquire_ym."'";
+      $stmt = $dbh->prepare($query_delete);
+      // Query実行
+      $stmt->execute();
 
       // SQL組み立て
       $query = "INSERT INTO m_userskill (user_id, skill_id, skill_level, acquire_ym) VALUES ";
@@ -226,24 +233,25 @@ class UserSkillManager extends DBManager{
       // シングルクォートのエスケープと、自動付与をすること！
       $query_values = array();
       foreach($skillsheet_data as $data){
-        $query_values[] = "(" . implode(",", array("'".$user_id."'", "'".$data["skill_id"]."'", $data["skill_level"], "'".$data["skill_acquire_ym"]."'") ) . ")";
+        $query_values[] = "(" . implode(",", array("'".$user_id."'", "'".$data["skill_id"]."'", $data["skill_level"], "'".$acquire_ym."'") ) . ")";
       }
       $query .= implode(",", $query_values);
 
-      echo $query;
-      return $if_return;
+      //$if_return["msg"] = $query;
+      //return $if_return;
 
       // Queryコンパイル
       $stmt = $dbh->prepare($query);
 
       // Query実行
-      $stmt->execute($params);
+      //$stmt->execute($params);
+      $stmt->execute();
 
       $dbh->commit();
 
       // 返却用Objにセット
       $if_return["return_cd"] = 0;
-      $if_return["msg"] = "";
+      //$if_return["msg"] = "all ok.".$query."::".$query_delete;
     }
     catch(Exception $e){
       $dbh->rollBack();

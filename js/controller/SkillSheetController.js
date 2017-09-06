@@ -60,13 +60,22 @@
         return res;
       })($scope.skill_list);
 
-      console.log(skill_list_plain);
-      console.log(JSON.stringify(skill_list_plain));
+      modal.show();
 
       SkillSetService
         .updateSkillSheet(skill_list_plain)
           .then(function(res){
-            console.log(res);
+            if(res && (res.return_cd == "0")){
+              showOnsDialog("更新しました");
+            }
+            else{
+              showOnsDialog("更新に失敗しました...");
+            }
+
+            modal.hide();
+          }, function(err){
+            modal.hide();
+            showOnsDialog("Fatal Error...");
           })
     };
 

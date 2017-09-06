@@ -96,8 +96,13 @@ $params = Array();  // preg_match_allの結果を受け取るArray
 
 // ルーティング本処理
 
+// ログインユーザを取得
+//$user_id = $_SERVER["REMOTE_USER"];
+//$user_id = "hideyuki.kawamura";
+$user_id = "379";
+
 // 認証が済んでいなければ
-if(empty($_SERVER["REMOTE_USER"])){
+if(empty($user_id)){
   throw new HttpErrorStatus("Unauthorized", 401);
   exit;
 }
@@ -116,7 +121,7 @@ if (preg_match_all("/^\/skillset$/", $path, $params)) {
     } else {
         throw new HttpErrorStatus("Method Not Allowed", 405);
     }
-  
+
 }
 // スキルシート取得/更新. 取得時はユーザidが必須. 更新時はPOSTデータにskilllistを詰めること
 else if (preg_match_all("/^\/skillsheet\/([0-9]*)$/", $path, $params)) {
@@ -129,17 +134,18 @@ else if (preg_match_all("/^\/skillsheet\/([0-9]*)$/", $path, $params)) {
     }
     else if($method == "POST"){
       $usm = new UserSkillManager();
-      response_json($usm->updateSkillSheet($_SERVER["REMOTE_USER"], $_POST));
+      response_json($usm->updateSkillSheet($user_id, $_POST));
+      exit;
     }
     else {
         throw new HttpErrorStatus("Method Not Allowed", 405);
     }
-  
+
 }
 else if(preg_match_all("/^\/master\/([a-z]*)$/", $path, $params)){
 
   if ($method == "GET") {
-    
+
     $mm = new MasterManager();
 
     // 全マスタ
