@@ -96,9 +96,14 @@ $params = Array();  // preg_match_allの結果を受け取るArray
 
 // ルーティング本処理
 
+// 認証が済んでいなければ
+if(empty($_SERVER["REMOTE_USER"])){
+  throw new HttpErrorStatus("Unauthorized", 401);
+  exit;
+}
+
 // スキルセット取得. 各種パラメータによってスキルを検索
 if (preg_match_all("/^\/skillset$/", $path, $params)) {
-
     if ($method == "GET") {
       // ユーザ情報取得
       $usm = new UserSkillManager();
@@ -111,54 +116,61 @@ if (preg_match_all("/^\/skillset$/", $path, $params)) {
     } else {
         throw new HttpErrorStatus("Method Not Allowed", 405);
     }
+  
 }
-// スキルシート取得用. ユーザidが必須
-else if (preg_match_all("/^\/skillsheet\/([0-9]+)$/", $path, $params)) {
+// スキルシート取得/更新. 取得時はユーザidが必須. 更新時はPOSTデータにskilllistを詰めること
+else if (preg_match_all("/^\/skillsheet\/([0-9]*)$/", $path, $params)) {
 
-    if (($method == "GET") && (count($params) >= 2)) {
+    if (($method == "GET") && (count($params) >= 2) && !empty($params[1][0])/* $params[1][0]がURIのユーザID部分 */) {
       // ユーザ情報取得
       $usm = new UserSkillManager();
       response_json($usm->getSkillSheet($params[1][0]));
       exit;
     }
+    else if($method == "POST"){
+      $usm = new UserSkillManager();
+      response_json($usm->updateSkillSheet($_SERVER["REMOTE_USER"], $_POST));
+    }
     else {
         throw new HttpErrorStatus("Method Not Allowed", 405);
     }
-
+  
 }
-else if(preg_match_all("/^\/master$/", $path, $params)){
+else if(preg_match_all("/^\/master\/([a-z]*)$/", $path, $params)){
+
   if ($method == "GET") {
-
+    
     $mm = new MasterManager();
-    response_json($mm->getAllMaster());
-    exit;
 
-  } else {
+    // 全マスタ
+    if(empty($params[1][0])){
+      response_json($mm->getAllMaster());
+      exit;
+    }
+    else if($params[1][0] == "skill"){
+      response_json($mm->getSkillMaster($_GET));
+      exit;
+    }
+    else if($params[1][0] == "user"){
+      response_json($mm->getUserMaster($_GET));
+      exit;
+    }
+    else if($params[1][0] == "depart"){
+      response_json($mm->getDepartMaster($_GET));
+      exit;
+    }
+
+    throw new HttpErrorStatus("Method Not Allowed", 405);
+
+  }
+  else {
       throw new HttpErrorStatus("Method Not Allowed", 405);
   }
 }
-else if(preg_match_all("/^\/master\/skill$/", $path, $params)){
+
+else if(preg_match_all("/^\/test$/", $path, $params)){
   if ($method == "GET") {
-    $mm = new MasterManager();
-    response_json($mm->getSkillMaster($_GET));
-    exit;
-  } else {
-      throw new HttpErrorStatus("Method Not Allowed", 405);
-  }
-}
-else if(preg_match_all("/^\/master\/user$/", $path, $params)){
-  if ($method == "GET") {
-    $mm = new MasterManager();
-    response_json($mm->getUserMaster($_GET));
-    exit;
-  } else {
-      throw new HttpErrorStatus("Method Not Allowed", 405);
-  }
-}
-else if(preg_match_all("/^\/master\/depart$/", $path, $params)){
-  if ($method == "GET") {
-    $mm = new MasterManager();
-    response_json($mm->getDepartMaster($_GET));
+    echo $_SERVER["REMOTE_USER"];
     exit;
   } else {
       throw new HttpErrorStatus("Method Not Allowed", 405);

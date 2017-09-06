@@ -84,6 +84,20 @@
           });
       };
 
+      // 戻るボタンの横取り
+      $scope.$on('$locationChangeStart', function(event, next, current){
+        if(myNavigator.pages.length > 1){
+          myNavigator.popPage();
+          alert("backbutton get ok");
+          event.preventDefault();
+        }
+      });
+
+      $scope.callTest = function(){
+        console.log("in callTest");
+        SkillSetService.doTest();
+      };
+
       $scope.move2Head = function(type, id){
         var search_conditions;
 

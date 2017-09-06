@@ -21,9 +21,19 @@
             });
         };
 
+        // SkillSheet情報を更新する
+        this.updateSkillSheet = function(skill_list){
+          return new Promise(function(resolve, reject){
+            resolve({
+              return_cd: 0,
+              msg: "success!!"
+            });
+          });
+        };
+
         // Master情報を取得する
         this.getAllMasterInfo = function(){
-          return $http.get("php/router.php/master")
+          return $http.get("php/router.php/master/")
             .then(function(response){
               return response.data || [];
             });
@@ -42,6 +52,17 @@
               return response.data || [];
             });
         };
+
+
+
+        // テスト用です。
+        this.doTest = function(){
+          return $http.get("php/router.php/test")
+            .then(function(response){
+              console.log(response);
+              alert("test done");
+            });
+        }
 
     });
 })();

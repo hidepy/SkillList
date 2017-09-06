@@ -11,6 +11,9 @@ if(!empty($_SERVER["HTTPS"])){
 }
 // local用
 $accept_display = 1;
+
+// ログインユーザID
+$user_id = $_SERVER['REMOTE_USER'];
 ?>
 
 <html>
@@ -52,7 +55,7 @@ $accept_display = 1;
 
     <ons-toolbar id="h-head-toolbar" class="toolbar toolbar--material ">
         <div class="toolbar--material__left left">
-          スキルポータル(β)
+          スキルポータル(β) for <?php echo $user_id; ?>
         </div>
         <div class="toolbar--material__right right">
           <ons-toolbar-button ng-click='myNavigator.resetToPage("view/home.html")'>
@@ -66,7 +69,7 @@ $accept_display = 1;
 
     <ons-bottom-toolbar id="h-foot-toolbar">
       <div>
-        <p>powered by Angular.js + OnsenUI</p>
+        <p>powered by Angular.js + OnsenUI<button ng-click="callTest()">TEST</button></p>
         <p>hideyuki.kawamura(379) created @2017/08/20</p>
       </div>
     </ons-bottom-toolbar>

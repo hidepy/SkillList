@@ -40,5 +40,35 @@
 					});
 		};
 
+    $scope.updateSkillSheet = function(){
+
+      var skill_list_plain = (function(skill_hash){
+        var res = [];
+        for(var p in skill_hash){
+          (skill_hash[p] || [])
+            .filter(v=> Number(v.skill_level) > 0)
+            .map(v=> {
+              return {
+                skill_id: v.skill_id,
+                skill_level: v.skill_level,
+                skill_acquire_ym: v.skill_acquire_ym
+              }
+            })
+            .forEach(v=> res.push(v))
+          ;
+        }
+        return res;
+      })($scope.skill_list);
+
+      console.log(skill_list_plain);
+      console.log(JSON.stringify(skill_list_plain));
+
+      SkillSetService
+        .updateSkillSheet(skill_list_plain)
+          .then(function(res){
+            console.log(res);
+          })
+    };
+
   });
 })();

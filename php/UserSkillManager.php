@@ -188,5 +188,77 @@ class UserSkillManager extends DBManager{
     return $if_return;
   }
 
+  public function updateSkillSheet($user_id, $params){
+    // var_dump($params);
+    // $params["skillsheet_data"] にスキルシート情報が入っている
+
+    $if_return = array("return_cd"=> 9, "msg"=> "ERROR OCCURRED...", "item"=> null);
+
+    // POSTデータのスキルシート情報を取得
+    $skillsheet_data = json_decode($params["skillsheet_data"], true);
+    if(count($skillsheet_data) == 0){
+      return $if_return;
+    }
+
+    // DB接続用オブジェクト
+    $dbh = null;
+
+    try{
+      // DB接続用Object取得
+      $dbh = $this->_open_db();
+    }
+    catch(Exception $e){
+      $if_return["return_cd"] = 9;
+      $if_return["msg"] = $e->getMessage();
+      return $if_return;
+    }
+
+    try{
+      // 発行するクエリ
+      $query = "";
+
+      // トランザクション開始
+      $dbh->beginTransaction();
+
+      // SQL組み立て
+      $query = "INSERT INTO m_userskill (user_id, skill_id, skill_level, acquire_ym) VALUES ";
+
+      // シングルクォートのエスケープと、自動付与をすること！
+      $query_values = array();
+      foreach($skillsheet_data as $data){
+        $query_values[] = "(" . implode(",", array("'".$user_id."'", "'".$data["skill_id"]."'", $data["skill_level"], "'".$data["skill_acquire_ym"]."'") ) . ")";
+      }
+      $query .= implode(",", $query_values);
+
+      echo $query;
+      return $if_return;
+
+      // Queryコンパイル
+      $stmt = $dbh->prepare($query);
+
+      // Query実行
+      $stmt->execute($params);
+
+      $dbh->commit();
+
+      // 返却用Objにセット
+      $if_return["return_cd"] = 0;
+      $if_return["msg"] = "";
+    }
+    catch(Exception $e){
+      $dbh->rollBack();
+
+      $if_return["return_cd"] = 9;
+      $if_return["msg"] = $e->getMessage();
+    }
+
+    // 解放
+    $dbh = null;
+
+    return $if_return;
+  }
+
 }
+
+
 ?>
