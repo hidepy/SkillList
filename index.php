@@ -2,16 +2,6 @@
 // 全ユーザ対象にセッションを開始する
 session_start();
 
-// セッションはこんな感じで使う
-$_SESSION["imtasokori"] = "test";
-
-$accept_display = 0;
-if(!empty($_SERVER["HTTPS"])){
-  $accept_display = 1;
-}
-// local用
-$accept_display = 1;
-
 // ログインユーザID
 $user_id = $_SERVER['REMOTE_USER'];
 ?>
@@ -69,31 +59,22 @@ $user_id = $_SERVER['REMOTE_USER'];
 
     <ons-bottom-toolbar id="h-foot-toolbar">
       <div>
-        <p>powered by Angular.js + OnsenUI<button ng-click="callTest()">TEST</button></p>
+        <p>powered by Angular.js + OnsenUI</p>
         <p>hideyuki.kawamura(379) created @2017/08/20</p>
       </div>
     </ons-bottom-toolbar>
 
     <div id="initial-screen">
-      <?php
-      if($accept_display == 1){
-        echo '
-        <div>
-          <span>
-            Now Loading...
-          </span>
-          <svg class="progress-circular progress-circular--indeterminate">
-            <circle class="progress-circular__background"/>
-            <circle class="progress-circular__primary progress-circular--indeterminate__primary"/>
-            <circle class="progress-circular__secondary progress-circular--indeterminate__secondary"/>
-          </svg>
-        </div>
-        ';
-      }
-      else{
-        echo "<div>HTTPでのアクセスは許可されていません. HTTPSでアクセスしてください</div>";
-      }
-      ?>
+      <div>
+        <span>
+          Now Loading...
+        </span>
+        <svg class="progress-circular progress-circular--indeterminate">
+          <circle class="progress-circular__background"/>
+          <circle class="progress-circular__primary progress-circular--indeterminate__primary"/>
+          <circle class="progress-circular__secondary progress-circular--indeterminate__secondary"/>
+        </svg>
+      </div>
     </div>
 
     <!-- modal -->

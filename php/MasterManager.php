@@ -1,5 +1,5 @@
 <?php
-require_once("BDManager.php");
+require_once("DBManager.php");
 
 class MasterManager extends DBManager{
 

@@ -1,5 +1,5 @@
 <?php
-require_once("BDManager.php");
+require_once("DBManager.php");
 
 class UserSkillManager extends DBManager{
 
@@ -30,12 +30,12 @@ class UserSkillManager extends DBManager{
         m_userskill m1
         INNER JOIN
           m_user m2
-      	ON
-      	  m1.user_id = m2.id
+        ON
+          m1.user_id = m2.id
         INNER JOIN
           m_skill m3
-      	ON
-      	  m1.skill_id = m3.skill_id
+        ON
+          m1.skill_id = m3.skill_id
       WHERE
         1 = 1
       ".$condition_str;
@@ -140,6 +140,37 @@ class UserSkillManager extends DBManager{
         m1.skill_id
         ,m1.skill_name
         ,m1.type
+        ,COALESCE(vm2.skill_level, 0) as skill_level
+        ,COALESCE(vm2.acquire_ym, '') as acquire_ym
+      FROM
+        m_skill m1
+        LEFT OUTER JOIN
+          (
+              SELECT
+                m2.skill_id
+                ,m2.skill_level
+                ,MAX(m2.acquire_ym) acquire_ym
+              FROM
+                m_userskill m2
+              WHERE
+                m2.user_id = :user_id
+              GROUP BY
+                m2.skill_id
+              ,m2.skill_level
+          ) vm2
+          ON
+            m1.skill_id = vm2.skill_id
+      ORDER BY
+        m1.skill_id
+      ";
+
+      /*
+      // acquire_ym指定なら
+      $query = "
+      SELECT
+        m1.skill_id
+        ,m1.skill_name
+        ,m1.type
         ,COALESCE(m2.skill_level, 0) as skill_level
         ,COALESCE(m2.acquire_ym, '') as acquire_ym
       FROM
@@ -148,10 +179,13 @@ class UserSkillManager extends DBManager{
           m_userskill m2
           ON
             m1.skill_id = m2.skill_id
-      	    AND m2.user_id = :user_id
+            AND m2.user_id = :user_id
+      WHERE
+          m2.acquire_ym = :acquire_ym
       ORDER BY
         m1.skill_id
       ";
+      */
 
       // Queryコンパイル
       $stmt = $dbh->prepare($query);
@@ -194,9 +228,32 @@ class UserSkillManager extends DBManager{
 
     $if_return = array("return_cd"=> 9, "msg"=> "ERROR OCCURRED...", "item"=> null);
 
+    // 習得年月(m_userskill-> acquire_ym)については...保留. やはり不要なのでは...？とは思えど、ユーザの成長記録が残らないとね...？
+    $today = date("Ymd");// yyyyMMdd形式の値が取得できる
+    // 習得年月をセット
+    $acquire_ym = substr($today, 0, 4) . $acquire_ym = substr($today, 4, 2);
+
     // POSTデータのスキルシート情報を取得
     $skillsheet_data = json_decode($params["skillsheet_data"], true);
+
+    //  入力データなしは終了
     if(count($skillsheet_data) == 0){
+      $if_return["return_cd"] = 1;
+      $if_return["msg"] = "No Update Data...";
+      return $if_return;
+    }
+
+    // 必要パラメータ無しは終了(user_id)
+    if(empty($user_id)){
+      $if_return["return_cd"] = 9;
+      $if_return["msg"] = "No Valid User...";
+      return $if_return;
+    }
+
+    // 必要パラメータ無しは終了(acquire_ym)
+    if(empty($acquire_ym)){
+      $if_return["return_cd"] = 9;
+      $if_return["msg"] = "No Acquire YM...";
       return $if_return;
     }
 
@@ -214,50 +271,55 @@ class UserSkillManager extends DBManager{
     }
 
     try{
-      // 発行するクエリ
-      $query = "";
-
-      $acquire_ym = "291709";
-
       // トランザクション開始
-      $dbh->beginTransaction();
+      //$dbh->beginTransaction(); // ※※※ トランザクション張った状態でDEL-> INSするとPrimaryKey違反になってしまう...んで、一旦トラン無しで。誰かなおして。
 
-      $query_delete = "DELETE FROM m_userskill WHERE user_id = '".$user_id."' AND acquire_ym = '".$acquire_ym."'";
-      $stmt = $dbh->prepare($query_delete);
+      // 既存データDelete用
+      $query_delete = "DELETE FROM m_userskill WHERE user_id = ? AND acquire_ym = ?";
+
+      // Delete実行
+      $stmt_delete = $dbh->prepare($query_delete);
+
       // Query実行
-      $stmt->execute();
+      $stmt_delete->execute(array($user_id, $acquire_ym));
 
-      // SQL組み立て
-      $query = "INSERT INTO m_userskill (user_id, skill_id, skill_level, acquire_ym) VALUES ";
 
+      // SQL組み立て REPLACE句=INSERTで重複データは上書きする
+      //$query = "INSERT INTO m_userskill (user_id, skill_id, skill_level, acquire_ym) VALUES ";
+      $query = "REPLACE INTO m_userskill (user_id, skill_id, skill_level, acquire_ym) VALUES ";
+
+      // バインドパラメータ(Insert用)
+
+      $bind_params = array();
       // シングルクォートのエスケープと、自動付与をすること！
       $query_values = array();
       foreach($skillsheet_data as $data){
-        $query_values[] = "(" . implode(",", array("'".$user_id."'", "'".$data["skill_id"]."'", $data["skill_level"], "'".$acquire_ym."'") ) . ")";
+        //$query_values[] = "(" . implode(",", array("'".$user_id."'", "'".$data["skill_id"]."'", $data["skill_level"], "'".$acquire_ym."'") ) . ")";
+        // Insert文を追加
+        $query_values[] = "(?, ?, ?, ?)";
+        // Insert用バインドパラメータを追加
+        array_push($bind_params, $user_id, $data["skill_id"], $data["skill_level"], $acquire_ym);
       }
       $query .= implode(",", $query_values);
-
-      //$if_return["msg"] = $query;
-      //return $if_return;
 
       // Queryコンパイル
       $stmt = $dbh->prepare($query);
 
       // Query実行
-      //$stmt->execute($params);
-      $stmt->execute();
+      $stmt->execute($bind_params);
+      //$stmt->execute();
 
-      $dbh->commit();
+      // $dbh->commit();  // ※※※ トランザクション張った状態でDEL-> INSするとPrimaryKey違反になってしまう...んで、一旦トラン無しで。誰かなおして。
 
       // 返却用Objにセット
       $if_return["return_cd"] = 0;
-      //$if_return["msg"] = "all ok.".$query."::".$query_delete;
+      $if_return["msg"] = "";
     }
     catch(Exception $e){
-      $dbh->rollBack();
+      // $dbh->rollBack(); // ※※※ トランザクション張った状態でDEL-> INSするとPrimaryKey違反になってしまう...んで、一旦トラン無しで。誰かなおして。
 
       $if_return["return_cd"] = 9;
-      $if_return["msg"] = $e->getMessage();
+      $if_return["msg"] = "affect rows=".$stmt_delete->rowCount()."(delete), ".$stmt->rowCount()."(insert). ".$e->getMessage();
     }
 
     // 解放

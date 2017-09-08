@@ -1,6 +1,7 @@
 <?php
 // FROM Git wbrxcorp(shimarin) thanx!!
 
+require_once("DBManager.php");
 require_once("UserSkillManager.php");
 require_once("MasterManager.php");
 
@@ -126,7 +127,7 @@ if (preg_match_all("/^\/skillset$/", $path, $params)) {
 // スキルシート取得/更新. 取得時はユーザidが必須. 更新時はPOSTデータにskilllistを詰めること
 else if (preg_match_all("/^\/skillsheet\/([0-9]*)$/", $path, $params)) {
 
-    if (($method == "GET") && (count($params) >= 2) && !empty($params[1][0])/* $params[1][0]がURIのユーザID部分 */) {
+    if (($method == "GET") && (count($params) >= 2) && !empty($params[1][0])) {
       // ユーザ情報取得
       $usm = new UserSkillManager();
       response_json($usm->getSkillSheet($params[1][0]));
@@ -173,16 +174,29 @@ else if(preg_match_all("/^\/master\/([a-z]*)$/", $path, $params)){
       throw new HttpErrorStatus("Method Not Allowed", 405);
   }
 }
-
-else if(preg_match_all("/^\/test$/", $path, $params)){
+else if(preg_match_all("/^\/test\/([a-z]*)$/", $path, $params)){
+  
   if ($method == "GET") {
-    echo $_SERVER["REMOTE_USER"];
+    if(empty($params[1][0])){
+      echo $_SERVER["REMOTE_USER"];
+    }    
     exit;
-  } else {
+  }
+  else if($method == "POST"){
+    // POSTメソッド
+    if($params[1][0] == "execsql"){
+      if(!empty($_POST["sql"])){
+        $dbm = new DBManager();
+        return response_json($dbm->execSQL($_POST["sql"]));
+      }
+    }
+    exit;
+  }
+  else {
       throw new HttpErrorStatus("Method Not Allowed", 405);
   }
+  
 }
-
 
 /*
 if (preg_match_all("/^\/hello\/([0-9]+)$/", $path, $params) && $method == "POST") {
