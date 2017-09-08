@@ -1,0 +1,62 @@
+<ons-page ng-controller="SkillSheetController" ng-init="skillsheet_init()">
+
+  <style>
+  .ss-table-heading{
+    width: 100%;
+    height: 1.6em;
+    margin: 0;
+    overflow: hidden;
+  }
+  tr[data-skilllevel]{
+    border-top: solid 1px #333;
+    border-bottom: solid 1px #333;
+    font-size: 12px;
+  }
+  tr[data-skilllevel='0']{
+    background-color: #f0f0f0;
+    color: #c0c0c0;
+  }
+  tr[data-skilllevel='1']{
+    color: #666;
+    background: -moz-linear-gradient(to right, rgba(0, 150,136,0.2), #fff);
+    background: -webkit-linear-gradient(to right, rgba(0, 150,136,0.2), #fff);
+    background: linear-gradient(to right, rgba(0, 150,136,0.2), #fff);
+  }
+  tr[data-skilllevel='2']{
+    background: -moz-linear-gradient(to right, rgba(0, 150,136,0.35), #fff);
+    background: -webkit-linear-gradient(to right, rgba(0, 150,136,0.35), #fff);
+    background: linear-gradient(to right, rgba(0, 150,136,0.45), #fff);
+  }
+  tr[data-skilllevel='3']{
+    background: -moz-linear-gradient(to right, rgba(0, 150,136,0.65), #fff);
+    background: -webkit-linear-gradient(to right, rgba(0, 150,136,0.65), #fff);
+    background: linear-gradient(to right, rgba(0, 150,136,0.65), #fff);
+  }
+  tr[data-skilllevel='4']{
+    color: #fff;
+    background: -moz-linear-gradient(to right, #009688, #fff);
+    background: -webkit-linear-gradient(to right, #009688, #fff);
+    background: linear-gradient(to right, #009688, #fff);
+  }
+  </style>
+
+  <div ng-repeat="type in skill_types" style='float: left; width: 20%;'>
+    <p class="ss-table-heading">{{type.name}}</p>
+    <table class="skillsheet-table" style="width: 100%;">
+      <tr ng-repeat="item in skill_list[type.id]" data-skilllevel={{item.skill_level}}>
+        <td style="overflow: hidden; word-break: break-all; height: 1.6em; display: inline-block; width: 80%">
+            {{item.skill_name}}
+        </td>
+        <td style="display: inline-block; width: 15%">
+          <input ng-show="proc_type=='1'" type="number" min="0" max="4" class="sks-skill-level-text" ng-model="item.skill_level" />
+          <span ng-show="proc_type=='0'" class="sks-skill-level-text">{{item.skill_level}}</span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="large-button-wrapper">
+    <ons-button class="button button--material" ng-click="updateSkillSheet()">UPDATE</ons-button>
+  </div>
+
+</ons-page>

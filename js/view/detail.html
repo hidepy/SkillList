@@ -1,0 +1,65 @@
+<ons-page ng-controller="DetailController">
+  <div id="d-wrapper" ng-init="init()">
+
+    <div id="d-wrapper" ng-show="type=='U'">
+
+      <h2>{{user_info.user_name}}</h2>
+
+      <h3 class="heading">基本情報</h3>
+
+      <ul class="list">
+        <li class="list-item" ng-repeat="v in user_info_disp_definition">
+          <div class="list-item__center">
+            <span>{{v.name}}</span>
+            <span>{{v.description}}</span>
+          </div>
+        </li>
+      </ul>
+
+      <h3 class="heading">保有スキル</h3>
+
+      <ul class="list">
+        <li class="list-item list-item--tappable list-item--chevron" ng-repeat="s in user_info.skills" ng-click="move2Detail('S', s.skill_id)">
+          <div class="list-item__center">
+            <span >
+              {{s.skill_name}}<span class="fontsize-small">({{s.skill_id}})</span>
+            </span>
+            <span>
+              <span style="padding-right: 20%;">
+                level:{{s.skill_level}}
+              </span>
+              <span class="fontsize-small">
+                {{skill_type_hash[s.skill_type]}}({{s.skill_type}})
+              </span>
+            </span>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+
+    <div id="us-wrapper" ng-show="type=='S'">
+      <h2>{{skill_info.skill_name}}</h2>
+
+      <h3 class="heading">基本情報</h3>
+
+      <ul class="list">
+        <li class="list-item" ng-repeat="v in skill_info_disp_definition">
+          <div class="list-item__center">
+            <span>{{v.name}}</span>
+            <span>{{v.description}}</span>
+          </div>
+        </li>
+      </ul>
+
+      <div class="large-button-wrapper">
+        <ons-button class="button button--material" ng-click="move2Head('S', skill_info.skill_id)">スキルを保有している人を探す</ons-button>
+      </div>
+
+    </div>
+
+    <div class="large-button-wrapper">
+      <ons-button class="button button--material" ng-click="myNavigator.popPage();">戻る</ons-button>
+    </div>
+  </div>
+</ons-page>
