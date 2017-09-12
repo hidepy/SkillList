@@ -41,15 +41,18 @@
       $scope.com_user_list = [];
       $scope.com_user_name = {};
 
-      // ---------- methods ----------
-      $scope.init = function(protcol_type){
-        console.log("root initialized");
+      // 管理者権限フラグ
+      $scope.is_admin = false;
 
-        console.log(protcol_type);
+      // ---------- methods ----------
+      $scope.init = function(protcol_type, is_admin){
 
         if(protcol_type != 1){
           return;
         }
+
+        // 管理者判定
+        $scope.is_admin = (is_admin == 1);
 
         // 取得されていなければリストを作成
         SkillSetService.getAllMasterInfo()
@@ -132,8 +135,18 @@
         });
       };
 
+      // スキルシートへの遷移
       $scope.move2SkillSheet = function(type){
         myNavigator.pushPage("view/skill-sheet.html", {
+          data: {
+            type: type
+          }
+        });
+      };
+
+      // 
+      $scope.move2Master = function(type){
+        myNavigator.pushPage("view/master.html", {
           data: {
             type: type
           }

@@ -4,6 +4,34 @@ session_start();
 
 // ログインユーザID
 $user_id = $_SERVER['REMOTE_USER'];
+
+$_SESSION["is_admin"] = 0;
+
+// ここは好みで別のユーザに, 又はiniファイル等外出ししてください
+if($user_id == "admin"){
+  $_SESSION["is_admin"] = 1;
+}
+
+$is_admin = 1;
+$is_https = 1; // とりあえず
+
+/*
+if(empty($user_id)){
+  echo "<p>ユーザのログインが必要です</p>";
+  exit;
+}
+*/
+
+/*
+2017/09/12 残 追加機能
+
+マスタ更新(スキル本体, 部署, ユーザ)(admin限定)
+
+ユーザ情報更新(初回ログイン時に)
+
+スキル本体のエラーケース処理フロー
+
+*/
 ?>
 
 <html>
@@ -35,11 +63,12 @@ $user_id = $_SERVER['REMOTE_USER'];
     <!-- Controller -->
     <script src="js/controller/RootController.js"></script>
     <script src="js/controller/SkillSheetController.js"></script>
+    <script src="js/controller/MasterController.js"></script>
     <script src="js/controller/HeaderController.js"></script>
     <script src="js/controller/DetailController.js"></script>
   </head>
 
-  <body ng-controller="RootController" ng-init="init(<?php echo $accept_display ?>)">
+  <body ng-controller="RootController" ng-init="init(<?php echo $is_https . "," . $is_admin ?>)">
     <!-- Entry View Page -->
     <ons-navigator var="myNavigator"></ons-navigator>
 
@@ -59,8 +88,7 @@ $user_id = $_SERVER['REMOTE_USER'];
 
     <ons-bottom-toolbar id="h-foot-toolbar">
       <div>
-        <p>powered by Angular.js + OnsenUI</p>
-        <p>hideyuki.kawamura(379) created @2017/08/20</p>
+        <p>powered by Angular.js + OnsenUI. created by hidetaso</p>
       </div>
     </ons-bottom-toolbar>
 

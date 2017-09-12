@@ -59,6 +59,13 @@
             });
         };
 
+        this.getDepartInfo = function(params){
+          return $http.get("php/router.php/master/depart?" + $httpParamSerializer(params))
+            .then(function(response){
+              return response.data || [];
+            });
+        };
+
 
 
         // テスト用です。

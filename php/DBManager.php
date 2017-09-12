@@ -48,6 +48,14 @@ class DBManager{
       $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
       $dbh->exec("
+        CREATE TABLE IF NOT EXISTS m_skilltype (
+          type_id varchar(2) NOT NULL,
+          type_name varchar(30),
+          PRIMARY KEY (type_id)
+        )
+      ");
+
+      $dbh->exec("
         CREATE TABLE IF NOT EXISTS m_depart (
           depart_id varchar(2) NOT NULL,
           depart_name varchar(30) DEFAULT NULL,
@@ -67,7 +75,7 @@ class DBManager{
 
       $dbh->exec("
         CREATE TABLE IF NOT EXISTS m_user (
-          id varchar(6) NOT NULL,
+          id varchar(30) NOT NULL,
           name varchar(30) DEFAULT NULL,
           depart varchar(2) DEFAULT NULL,
           is_midcarreer char(1) DEFAULT NULL,
@@ -79,7 +87,7 @@ class DBManager{
 
       $dbh->exec("
         CREATE TABLE IF NOT EXISTS m_userskill (
-          user_id varchar(6) NOT NULL,
+          user_id varchar(30) NOT NULL,
           skill_id varchar(6) NOT NULL,
           skill_level tinyint(4) DEFAULT '0',
           acquire_ym varchar(6) NOT NULL DEFAULT '',
