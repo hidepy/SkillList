@@ -3,7 +3,8 @@
 session_start();
 
 // ログインユーザID
-$user_id = $_SERVER['REMOTE_USER'];
+//$user_id = $_SERVER['REMOTE_USER'];
+$user_id = "hideyuki.kawamura";
 
 $_SESSION["is_admin"] = 0;
 
@@ -70,17 +71,22 @@ if(empty($user_id)){
 
   <body ng-controller="RootController" ng-init="init(<?php echo $is_https . "," . $is_admin ?>)">
     <!-- Entry View Page -->
-    <ons-navigator var="myNavigator"></ons-navigator>
+    <ons-navigator var="myNavigator" ons-postpush="updatePageCount()" ons-postpop="updatePageCount()"></ons-navigator>
 
     <ons-toolbar id="h-head-toolbar" class="toolbar toolbar--material ">
-        <div class="toolbar--material__left left">
-          スキルポータル(β) for <?php echo $user_id; ?>
+        <div class="toolbar--material__left left" ng-click="moveBack()">
+          <span ng-show="page_depth==1">
+            スキルポータル
+          </span>
+          <span ng-hide="page_depth==1">
+            < Back
+          </span>
         </div>
         <div class="toolbar--material__right right">
-          <ons-toolbar-button ng-click='myNavigator.resetToPage("view/home.html")'>
+          <ons-toolbar-button ng-click='move2Top()'>
             <ons-icon icon="md-home" size="32px" style="color: #fff"></ons-icon>
           </ons-toolbar-button>
-          <ons-toolbar-button ng-click='myNavigator.resetToPage("view/main.html")'>
+          <ons-toolbar-button ng-click='myNavigator.pushPage("view/main.html")'>
             <ons-icon icon="search" size="32px" style="color: #fff"></ons-icon>
           </ons-toolbar-button>
         </div>

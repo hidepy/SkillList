@@ -22,9 +22,13 @@
       var options = myNavigator.topPage.data || {};
       $scope.proc_type = (options.type == "1") ? "1" : "0";// 0 or 1に寄せる
 
+      modal.show();
+
 			SkillSetService
 				.getSkillSheetByUserId($scope.login_user_info.user_id)
 					.then(function(res){
+
+            modal.hide();
 
             var list = res.item;
 
@@ -37,7 +41,12 @@
               ($scope.skill_list[v.skill_type]).push(v);
             });
 
-					});
+					}, function(err){
+
+            modal.hide();
+
+            showOnsDialog("Fatal Error Occurred...");
+          });
 		};
 
     $scope.updateSkillSheet = function(){

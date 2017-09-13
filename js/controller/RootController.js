@@ -31,6 +31,9 @@
         {"name": "入社年度", "description": "" + $scope.login_user_info.nendo + ($scope.login_user_info.is_midcarrer ? "[中途]" : "")}
       ];
 
+      // タイトル名称
+      $scope.page_depth = 1;
+
       // スキルマスタリスト
       $scope.com_skill_list = [];
       $scope.com_skill_hash = {};
@@ -102,8 +105,30 @@
         SkillSetService.doTest();
       };
 
+
+      // page_depthカウントの管理
+      $scope.updatePageCount = function(){
+        $scope.page_depth = myNavigator.pages.length;
+
+        if(myNavigator.pages[myNavigator.pages.length - 1].id == "home-wrapper"){
+          $scope.page_depth = 1;
+        }
+      };
+
+      // Backボタン
+      $scope.moveBack = function(){
+        if(myNavigator.pages.length > 1){
+          myNavigator.popPage();
+        }
+      };
+
+      // ホームへ移動ボタン
+      $scope.move2Top = function(){
+        myNavigator.resetToPage("view/home.html");
+      };
+
       $scope.move2Head = function(type, id){
-        var search_conditions;
+        var search_conditions = {};
 
         if(type == "S"){
           search_conditions["skill_id"] = id;
@@ -144,7 +169,7 @@
         });
       };
 
-      // 
+      //
       $scope.move2Master = function(type){
         myNavigator.pushPage("view/master.html", {
           data: {
@@ -152,6 +177,5 @@
           }
         });
       };
-
     })
 })();
