@@ -1,0 +1,16 @@
+<ons-page ng-controller="MasterController" ng-init="master_init()">
+
+  <table class="master-table">
+    <tr ng-repeat="item in items">
+      <td ng-repeat="col in col_def">
+        {{col.name}}
+        <input type="item[col.type]" ng-model="item[col.name]" ng-readonly="item[col.readonly]" />
+      </td>
+    </tr>
+  </table>
+
+  <div class="large-button-wrapper">
+    <ons-button class="button button--material" ng-click="updateMaster()">UPDATE</ons-button>
+  </div>
+
+</ons-page>

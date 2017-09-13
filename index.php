@@ -1,28 +1,38 @@
 <?php
-/**************************************************
-
-斉藤くんへ
-
-やはり、ISMSとかネットワークまわりのところで、私が在籍している間の稼働は難しそうです...
-あなたが社内に帰ってから、あなたの社内評価/知名度アップのためにでも使ってください。
-
-***************************************************/
-
 // 全ユーザ対象にセッションを開始する
 session_start();
 
-// セッションはこんな感じで使う
-$_SESSION["imtasokori"] = "test";
-
-$accept_display = 0;
-if(!empty($_SERVER["HTTPS"])){
-  $accept_display = 1;
-}
-// local用
-$accept_display = 1;
-
 // ログインユーザID
-$user_id = $_SERVER['REMOTE_USER'];
+//$user_id = $_SERVER['REMOTE_USER'];
+$user_id = "hideyuki.kawamura";
+
+$_SESSION["is_admin"] = 0;
+
+// ここは好みで別のユーザに, 又はiniファイル等外出ししてください
+if($user_id == "admin"){
+  $_SESSION["is_admin"] = 1;
+}
+
+$is_admin = 1;
+$is_https = 1; // とりあえず
+
+/*
+if(empty($user_id)){
+  echo "<p>ユーザのログインが必要です</p>";
+  exit;
+}
+*/
+
+/*
+2017/09/12 残 追加機能
+
+マスタ更新(スキル本体, 部署, ユーザ)(admin限定)
+
+ユーザ情報更新(初回ログイン時に)
+
+スキル本体のエラーケース処理フロー
+
+*/
 ?>
 
 <html>
@@ -54,23 +64,29 @@ $user_id = $_SERVER['REMOTE_USER'];
     <!-- Controller -->
     <script src="js/controller/RootController.js"></script>
     <script src="js/controller/SkillSheetController.js"></script>
+    <script src="js/controller/MasterController.js"></script>
     <script src="js/controller/HeaderController.js"></script>
     <script src="js/controller/DetailController.js"></script>
   </head>
 
-  <body ng-controller="RootController" ng-init="init(<?php echo $accept_display ?>)">
+  <body ng-controller="RootController" ng-init="init(<?php echo $is_https . "," . $is_admin ?>)">
     <!-- Entry View Page -->
-    <ons-navigator var="myNavigator"></ons-navigator>
+    <ons-navigator var="myNavigator" ons-postpush="updatePageCount()" ons-postpop="updatePageCount()"></ons-navigator>
 
     <ons-toolbar id="h-head-toolbar" class="toolbar toolbar--material ">
-        <div class="toolbar--material__left left">
-          スキルポータル(β) for <?php echo $user_id; ?>
+        <div class="toolbar--material__left left" ng-click="moveBack()">
+          <span ng-show="page_depth==1">
+            スキルポータル
+          </span>
+          <span ng-hide="page_depth==1">
+            < Back
+          </span>
         </div>
         <div class="toolbar--material__right right">
-          <ons-toolbar-button ng-click='myNavigator.resetToPage("view/home.html")'>
+          <ons-toolbar-button ng-click='move2Top()'>
             <ons-icon icon="md-home" size="32px" style="color: #fff"></ons-icon>
           </ons-toolbar-button>
-          <ons-toolbar-button ng-click='myNavigator.resetToPage("view/main.html")'>
+          <ons-toolbar-button ng-click='myNavigator.pushPage("view/main.html")'>
             <ons-icon icon="search" size="32px" style="color: #fff"></ons-icon>
           </ons-toolbar-button>
         </div>
@@ -78,31 +94,21 @@ $user_id = $_SERVER['REMOTE_USER'];
 
     <ons-bottom-toolbar id="h-foot-toolbar">
       <div>
-        <p>powered by Angular.js + OnsenUI<button ng-click="callTest()">TEST</button></p>
-        <p>hideyuki.kawamura(379) created @2017/08/20</p>
+        <p>powered by Angular.js + OnsenUI. created by hidetaso</p>
       </div>
     </ons-bottom-toolbar>
 
     <div id="initial-screen">
-      <?php
-      if($accept_display == 1){
-        echo '
-        <div>
-          <span>
-            Now Loading...
-          </span>
-          <svg class="progress-circular progress-circular--indeterminate">
-            <circle class="progress-circular__background"/>
-            <circle class="progress-circular__primary progress-circular--indeterminate__primary"/>
-            <circle class="progress-circular__secondary progress-circular--indeterminate__secondary"/>
-          </svg>
-        </div>
-        ';
-      }
-      else{
-        echo "<div>HTTPでのアクセスは許可されていません. HTTPSでアクセスしてください</div>";
-      }
-      ?>
+      <div>
+        <span>
+          Now Loading...
+        </span>
+        <svg class="progress-circular progress-circular--indeterminate">
+          <circle class="progress-circular__background"/>
+          <circle class="progress-circular__primary progress-circular--indeterminate__primary"/>
+          <circle class="progress-circular__secondary progress-circular--indeterminate__secondary"/>
+        </svg>
+      </div>
     </div>
 
     <!-- modal -->
